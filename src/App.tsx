@@ -6,8 +6,11 @@ import {
 } from "react-router-dom";
 import Landing from './pages/Landing';
 import Login from './forms/Login'
-import Signup from './forms/SignUp'
+import Register from './forms/Register'
 import Dashboard from './pages/User'
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import NoAccess from "./pages/NoAccess/index";
+
 
 import './App.css'
 
@@ -17,8 +20,19 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/signup" element={<Register />} />
+        <Route
+          path="/no-access"
+          element={<NoAccess />}
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_URL = 'http://localhost:3000/api/auth'; // Asegúrate de que la URL esté configurada correctamente
 
@@ -21,3 +21,27 @@ export const login = async (email: string, password: string) => {
     }
   }
 };
+
+export const register = async (
+    nombres: string,
+    apellidos: string,
+    email: string,
+    password: string,
+    dui: string
+  ) => {
+    try {
+      console.log("Attempting registration with:", { nombres, apellidos, email, password, dui });
+      const response = await axios.post(`${API_URL}/register`, { nombres, apellidos, email, contrasenia: password, dui });
+      console.log("Registration successful, response data:", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Error in register service:", error);
+  
+      // Verificar si el error es de tipo AxiosError
+      if (error instanceof AxiosError && error.response && error.response.data) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error('Error al registrarse. Por favor, inténtalo de nuevo.');
+      }
+    }
+  };

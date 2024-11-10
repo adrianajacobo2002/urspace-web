@@ -12,7 +12,9 @@ import Link from "@mui/material/Link";
 import loginImage from "../../assets/img/login.png"; 
 import { login } from '../../services/users.service';
 import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios'; // Importa AxiosError
+import { AxiosError } from 'axios';
+import { Link as RouterLink } from 'react-router-dom'; // Importa Link de react-router-dom
+
 
 
 export default function Login() {
@@ -144,7 +146,8 @@ export default function Login() {
             </Button>
 
             <Link
-              href="#"
+              component={RouterLink}
+              to="/signup"
               sx={{
                 display: "block",
                 textAlign: "center",
