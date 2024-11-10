@@ -1,6 +1,6 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError } from "axios";
 
-const API_URL = 'http://localhost:3000/api/auth'; // Asegúrate de que la URL esté configurada correctamente
+const API_URL = "http://localhost:3000/api/auth"; // Asegúrate de que la URL esté configurada correctamente
 
 // Servicio de inicio de sesión
 export const login = async (email: string, password: string) => {
@@ -9,7 +9,8 @@ export const login = async (email: string, password: string) => {
     const response = await axios.post(`${API_URL}/login`, { email, password });
     console.log("Login response received:", response.data); // Log para ver la respuesta del servidor
     return response.data;
-  } catch (error: unknown) { // Cambia `any` a `unknown`
+  } catch (error: unknown) {
+    // Cambia `any` a `unknown`
     if (axios.isAxiosError(error)) {
       console.error("Error in login service:", error); // Log para ver cualquier error de Axios
       if (error.response && error.response.data) {
@@ -17,31 +18,64 @@ export const login = async (email: string, password: string) => {
       }
     } else {
       console.error("Non-Axios error in login service:", error); // Log para errores no relacionados con Axios
-      throw new Error('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+      throw new Error(
+        "Error al iniciar sesión. Por favor, inténtalo de nuevo."
+      );
     }
   }
 };
 
 export const register = async (
-    nombres: string,
-    apellidos: string,
-    email: string,
-    password: string,
-    dui: string
-  ) => {
-    try {
-      console.log("Attempting registration with:", { nombres, apellidos, email, password, dui });
-      const response = await axios.post(`${API_URL}/register`, { nombres, apellidos, email, contrasenia: password, dui });
-      console.log("Registration successful, response data:", response.data);
-      return response.data;
-    } catch (error: unknown) {
-      console.error("Error in register service:", error);
-  
-      // Verificar si el error es de tipo AxiosError
-      if (error instanceof AxiosError && error.response && error.response.data) {
-        throw new Error(error.response.data.message);
-      } else {
-        throw new Error('Error al registrarse. Por favor, inténtalo de nuevo.');
-      }
+  nombres: string,
+  apellidos: string,
+  email: string,
+  password: string,
+  dui: string
+) => {
+  try {
+    console.log("Attempting registration with:", {
+      nombres,
+      apellidos,
+      email,
+      password,
+      dui,
+    });
+    const response = await axios.post(`${API_URL}/register`, {
+      nombres,
+      apellidos,
+      email,
+      contrasenia: password,
+      dui,
+    });
+    console.log("Registration successful, response data:", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error in register service:", error);
+
+    // Verificar si el error es de tipo AxiosError
+    if (error instanceof AxiosError && error.response && error.response.data) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("Error al registrarse. Por favor, inténtalo de nuevo.");
     }
-  };
+  }
+};
+
+export const getUserInfo = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No token found");
+    }
+
+    const response = await axios.get(`${API_URL}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Envía el token en los headers
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    throw error;
+  }
+};
