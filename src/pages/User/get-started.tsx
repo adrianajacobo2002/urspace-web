@@ -3,8 +3,12 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import ParticlesBackground from "../../components/ParticleBg";
 import Navbar from "../../layouts/UserNavbar";
+import { useNavigate } from 'react-router-dom';
+
 
 const GetStarted: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -60,6 +64,7 @@ const GetStarted: React.FC = () => {
             width: '200px',
             borderRadius: '15px'
           }}
+          onClick={() => navigate('/crear-propiedad')}
         >
           Empezar
         </Button>
