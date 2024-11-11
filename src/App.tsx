@@ -11,6 +11,7 @@ import Dashboard from "./pages/User";
 import Publicar from "./pages/User/get-started";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NoAccess from "./pages/NoAccess/index";
+import OwnerMode from "./pages/User/OwnerMode"
 
 import "./App.css";
 
@@ -61,6 +62,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Publicar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner-mode"
+            element={
+              <ProtectedRoute>
+                <OwnerMode />
               </ProtectedRoute>
             }
           />
