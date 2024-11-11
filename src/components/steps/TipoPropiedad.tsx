@@ -1,4 +1,3 @@
-// src/components/steps/TipoPropiedad.tsx
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 
@@ -8,14 +7,20 @@ interface TipoPropiedadProps {
   setIsStepValid: (isValid: boolean) => void;
 }
 
+enum TipoTerreno {
+  Alquilar = "alquilar",
+  Vender = "vender",
+}
+
 const TipoPropiedad: React.FC<TipoPropiedadProps> = ({
   selectedOption,
   setSelectedOption,
   setIsStepValid,
 }) => {
-  const handleOptionClick = (option: string) => {
+  const handleOptionClick = (option: TipoTerreno) => {
     setSelectedOption(option);
     setIsStepValid(true);
+    console.log("Opción seleccionada:", option); // Log para depuración
   };
 
   return (
@@ -26,20 +31,20 @@ const TipoPropiedad: React.FC<TipoPropiedadProps> = ({
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
         <Button
           variant="outlined"
-          onClick={() => handleOptionClick("alquilar")}
+          onClick={() => handleOptionClick(TipoTerreno.Alquilar)}
           sx={{
-            borderColor: selectedOption === "alquilar" ? "#65348c" : "grey",
-            backgroundColor: selectedOption === "alquilar" ? "#F0E8FF" : "white",
+            borderColor: selectedOption === TipoTerreno.Alquilar ? "#65348c" : "grey",
+            backgroundColor: selectedOption === TipoTerreno.Alquilar ? "#F0E8FF" : "white",
           }}
         >
           Alquilarla
         </Button>
         <Button
           variant="outlined"
-          onClick={() => handleOptionClick("vender")}
+          onClick={() => handleOptionClick(TipoTerreno.Vender)}
           sx={{
-            borderColor: selectedOption === "vender" ? "#65348c" : "grey",
-            backgroundColor: selectedOption === "vender" ? "#F0E8FF" : "white",
+            borderColor: selectedOption === TipoTerreno.Vender ? "#65348c" : "grey",
+            backgroundColor: selectedOption === TipoTerreno.Vender ? "#F0E8FF" : "white",
           }}
         >
           Venderla

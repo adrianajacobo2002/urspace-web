@@ -2,22 +2,30 @@ import React, { useEffect, useState } from "react";
 import { Box, TextField, Typography, Button, Chip, IconButton } from "@mui/material";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { fetchEtiquetas } from '../../services/etiquetas.service'; // Importa la función de servicio
 
 interface InformacionPropiedadProps {
   setIsStepValid: (isValid: boolean) => void;
 }
 
-const etiquetasDisponibles = ["Boda", "Rural", "Jardín", "Bosque", "Campamento", "Playa"];
-
-const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
-  setIsStepValid,
-}) => {
+const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({ setIsStepValid }) => {
+  const [etiquetas, setEtiquetas] = useState<string[]>([]); // Estado para etiquetas obtenidas de la API
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<string[]>([]);
   const [imagenes, setImagenes] = useState<File[]>([]);
 
+  // Obtener etiquetas desde el backend al montar el componente
   useEffect(() => {
+    const cargarEtiquetas = async () => {
+      try {
+        const etiquetasDesdeAPI = await fetchEtiquetas();
+        setEtiquetas(etiquetasDesdeAPI.map((etiqueta: { nombre: string }) => etiqueta.nombre));
+      } catch (error) {
+        console.error("Error al cargar etiquetas:", error);
+      }
+    };
+    cargarEtiquetas();
     setIsStepValid(true); // Cambia según la lógica de validación
-  }, []);
+  }, [setIsStepValid]);
 
   // Maneja la selección de etiquetas
   const handleEtiquetaClick = (etiqueta: string) => {
@@ -48,20 +56,10 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <TextField label="Nombre de la propiedad" fullWidth required />
-        <TextField
-          label="Descripción de la propiedad"
-          fullWidth
-          multiline
-          rows={3}
-          required
-        />
+        <TextField label="Descripción de la propiedad" fullWidth multiline rows={3} required />
         <Box sx={{ display: "flex", gap: 2 }}>
           <TextField label="Capacidad" fullWidth required />
-          <TextField
-            label="Precio (por noche si es alquiler)"
-            fullWidth
-            required
-          />
+          <TextField label="Precio (por noche si es alquiler)" fullWidth required />
         </Box>
 
         {/* Sección de Etiquetas */}
@@ -73,7 +71,7 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
             Selecciona como máximo 5 etiquetas
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {etiquetasDisponibles.map((etiqueta) => (
+            {etiquetas.map((etiqueta) => (
               <Chip
                 key={etiqueta}
                 label={etiqueta}
@@ -112,11 +110,7 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
             {imagenes.map((imagen, index) => (
               <Box key={index} sx={{ position: "relative" }}>
-                <img
-                  src={URL.createObjectURL(imagen)}
-                  alt={`Preview ${index}`}
-                  style={{ width: 100, height: 100, borderRadius: 8 }}
-                />
+                <img src={URL.createObjectURL(imagen)} alt={`Preview ${index}`} style={{ width: 100, height: 100, borderRadius: 8 }} />
                 <IconButton
                   onClick={() => handleImageDelete(index)}
                   sx={{ position: "absolute", top: -10, right: -10, backgroundColor: "white" }}
