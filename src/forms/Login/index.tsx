@@ -112,6 +112,7 @@ export default function Login() {
               color="secondary"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <TextField
               id="password" // ID para integrar con la API
@@ -123,6 +124,7 @@ export default function Login() {
               color="secondary"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
             
@@ -139,7 +141,9 @@ export default function Login() {
                   backgroundColor: "#4E278C",
                 },
                 marginTop: "20px",
-                marginBottom: "20px"
+                marginBottom: "20px",
+                textTransform: 'none',
+                fontSize: '16px'
               }}
             >
               Iniciar Sesión

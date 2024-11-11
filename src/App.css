@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Righteous&display=swap');
 
 :root {
   --azul: #04172b;
@@ -13,8 +13,16 @@
   text-align: initial;
 }
 
+h1, h2, h3, h4, h5, h6{
+  font-family: "Righteous", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+}
+
+
 body {
-  font-family: "Epilogue", sans-serif;
+  font-family: "Onest", sans-serif;
   font-optical-sizing: auto;
   background-color: #04172b; /* Cambia el color de fondo temporalmente si es necesario */
   color: white;
@@ -26,12 +34,3 @@ canvas {
   vertical-align: bottom;
 }
 
-
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}

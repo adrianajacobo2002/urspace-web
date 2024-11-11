@@ -1,5 +1,4 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -33,6 +32,23 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+h1, h2, h3, h4, h5, h6{
+  font-family: "Righteous", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+}
+
+
+body {
+  font-family: "Onest", sans-serif;
+  font-optical-sizing: auto;
+  background-color: #04172b; /* Cambia el color de fondo temporalmente si es necesario */
+  color: white;
+  margin: 0;
+}
+
 
 button {
   border-radius: 8px;
