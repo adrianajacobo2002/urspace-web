@@ -59,27 +59,39 @@ export const getAllReservasByCurrentUser = async () => {
 
 // Servicio para obtener reservas del usuario actualmente logueado
 export const getReservasByCurrentUser = async () => {
-  try {
-    const token = getToken();
-
-    const userInfo = await getUserInfo();
-    const id_usuario = userInfo.id_usuario;
-
-    const reservasResponse = await axios.get(
-      `${API_URL}/reservas/usuario/${id_usuario}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    return reservasResponse.data;
-  } catch (error) {
-    console.error("Error obteniendo las reservaciones:", error);
-    throw error;
-  }
-};
+    try {
+      const token = getToken();
+  
+      const userInfo = await getUserInfo();
+      const id_usuario = userInfo.id_usuario;
+  
+      const reservasResponse = await axios.get(
+        `${API_URL}/reservas/usuario/${id_usuario}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Filtrar y mapear las reservas para incluir el nombre de la propiedad y del usuario
+      const mappedReservas = reservasResponse.data
+        .filter(
+          (reserva: any) =>
+            reserva.estado === "Pendiente" || reserva.estado === "EnCurso"
+        )
+        .map((reserva: any) => ({
+          ...reserva,
+          property: reserva.Terreno?.nombre || "Propiedad no disponible",
+          userName: `${reserva.Usuario?.nombres} ${reserva.Usuario?.apellidos}` || "Usuario no disponible",
+        }));
+  
+      return mappedReservas;
+    } catch (error) {
+      console.error("Error obteniendo las reservaciones:", error);
+      throw error;
+    }
+  };  
 
 // Servicio para obtener el conteo de reservas por estado (Pendiente, En Curso, etc.)
 export const getReservasCountByEstado = async (estado: string) => {

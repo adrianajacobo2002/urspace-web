@@ -1,0 +1,52 @@
+/* Estilos para eventos */
+.fc-daygrid-event {
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid; /* Agrega un borde con el mismo color del evento */
+  }
+  
+  .fc-daygrid-event-dot {
+    background-color: transparent;
+  }
+  
+  /* Evento pendiente */
+  .event-pending {
+    background-color: #47077f !important;
+    color: white !important;
+    border-color: #47077f !important; /* Borde del mismo color del fondo */
+  }
+  
+  /* Evento en progreso */
+  .event-inprogress {
+    background-color: #65348c !important;
+    color: white !important;
+    border-color: #65348c !important; /* Borde del mismo color del fondo */
+  }
+  
+  /* Estilo para el día de hoy */
+  .fc-day-today {
+    background-color: #F3E5F5 !important;
+  }
+  
+  /* Estilos para los nombres y números de días */
+  .fc-col-header-cell-cushion,
+  .fc-daygrid-day-number {
+    color: #47077f !important;
+  }
+/* Estilos para los botones de navegación y el botón "today" */
+.fc .fc-button {
+    background-color: #04172b !important; /* Color de fondo de los botones */
+    color: white !important;              /* Color del texto */
+    border: none !important;              /* Quita el borde */
+  }
+  
+  /* Cambiar el color al pasar el mouse por encima */
+  .fc .fc-button:hover {
+    background-color: #032546 !important; /* Color de fondo al pasar el mouse */
+    color: white !important;              /* Asegura que el texto sea visible */
+  }
+/* Cambia el color del título del mes en el calendario */
+.fc-toolbar-title {
+    color: #47077f !important; /* Cambia este color al morado deseado */
+  }
+      
