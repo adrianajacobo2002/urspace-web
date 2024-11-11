@@ -1,11 +1,20 @@
 // src/layouts/LoggedNavbar.tsx
 import React, { useEffect, useState } from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import AvatarWithInitials from "../../components/Avatar";
 import { getUserInfo } from "../../services/users.service";
 import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 interface User {
   firstName: string;
@@ -63,7 +72,30 @@ const LoggedNavbar: React.FC = () => {
           UrSpace
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography sx={{ marginRight: "50px" }}>Navegar</Typography>
+          <Typography
+            component={RouterLink}
+            to="/navegar" // Cambia a la ruta correspondiente
+            sx={{
+              marginRight: "50px",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            Navegar
+          </Typography>{" "}
+          <Typography
+            component={RouterLink}
+            to="/publicar" // Cambia a la ruta correspondiente
+            sx={{
+              marginRight: "50px",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            Crear Propiedad
+          </Typography>
           <IconButton color="inherit" sx={{ marginRight: "50px" }}>
             <ChatBubbleIcon />
           </IconButton>
@@ -85,11 +117,16 @@ const LoggedNavbar: React.FC = () => {
             onClose={handleMenuClose}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
-            
           >
-            <MenuItem sx={{ color: "black" }} onClick={handleViewProfile}>Ver perfil</MenuItem>
-            <MenuItem sx={{ color: "black" }} onClick={handleOwnerMode}>Modo propietario</MenuItem>
-            <MenuItem sx={{ color: "black" }} onClick={handleLogout}>Cerrar sesión</MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleViewProfile}>
+              Ver perfil
+            </MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleOwnerMode}>
+              Modo propietario
+            </MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleLogout}>
+              Cerrar sesión
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

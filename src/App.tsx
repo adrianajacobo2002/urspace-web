@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import Login from "./forms/Login";
 import Register from "./forms/Register";
 import Dashboard from "./pages/User";
+import Publicar from "./pages/User/crear-propiedad";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NoAccess from "./pages/NoAccess/index";
 
@@ -52,6 +53,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/publicar"
+            element={
+              <ProtectedRoute>
+                <Publicar />
               </ProtectedRoute>
             }
           />
