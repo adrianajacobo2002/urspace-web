@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box} from "@mui/material";
+import ReservationCalendar from "../../ReservationCalendar";
 
 const CalendarTab: React.FC = () => {
   return (
     <Box>
-      <Typography variant="body2">
-        Aquí puedes ver las fechas reservadas para tus propiedades.
-      </Typography>
+      <ReservationCalendar />
     </Box>
   );
 };
