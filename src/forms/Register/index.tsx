@@ -65,7 +65,7 @@ export default function Register() {
         {/* Imagen de Fondo */}
         <CardMedia
           component="img"
-          sx={{ width: 500, objectFit: 'cover' }}
+          sx={{ width: 500, objectFit: 'cover', height: '650px' }}
           image={registerImage}
           alt="Rocket"
         />
@@ -112,6 +112,7 @@ export default function Register() {
               color="secondary"
               value={nombres}
               onChange={(e) => setNombres(e.target.value)}
+              required
             />
             <TextField
               id="apellidos"
@@ -122,6 +123,7 @@ export default function Register() {
               color="secondary"
               value={apellidos}
               onChange={(e) => setApellidos(e.target.value)}
+              required
             />
             <TextField
               id="email"
@@ -132,6 +134,7 @@ export default function Register() {
               color="secondary"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <TextField
               id="password"
@@ -143,6 +146,7 @@ export default function Register() {
               color="secondary"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <TextField
               id="dui"
@@ -153,6 +157,7 @@ export default function Register() {
               color="secondary"
               value={dui}
               onChange={(e) => setDui(e.target.value)}
+              required
             />
 
             <Button
@@ -168,6 +173,8 @@ export default function Register() {
                 },
                 marginTop: '20px',
                 marginBottom: '20px',
+                textTransform: 'none',
+                fontSize: '16px'
               }}
             >
               Registrarse

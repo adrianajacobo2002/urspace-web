@@ -13,7 +13,7 @@ const AvatarWithInitials: React.FC<AvatarWithInitialsProps> = ({ firstName, last
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <Avatar sx={{ bgcolor: "#65348c", cursor: hasMenu ? "pointer" : "default" }}>
+    <Avatar sx={{ bgcolor: "#65348c", cursor: hasMenu ? "pointer" : "default", color: 'white' }}>
       {initials}
     </Avatar>
   );

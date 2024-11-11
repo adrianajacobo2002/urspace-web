@@ -85,10 +85,11 @@ const LoggedNavbar: React.FC = () => {
             onClose={handleMenuClose}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
+            
           >
-            <MenuItem onClick={handleViewProfile}>Ver perfil</MenuItem>
-            <MenuItem onClick={handleOwnerMode}>Modo propietario</MenuItem>
-            <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleViewProfile}>Ver perfil</MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleOwnerMode}>Modo propietario</MenuItem>
+            <MenuItem sx={{ color: "black" }} onClick={handleLogout}>Cerrar sesión</MenuItem>
           </Menu>
         </Box>
       </Toolbar>
