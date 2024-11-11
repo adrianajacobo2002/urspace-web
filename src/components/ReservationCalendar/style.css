@@ -45,4 +45,8 @@
     background-color: #032546 !important; /* Color de fondo al pasar el mouse */
     color: white !important;              /* Asegura que el texto sea visible */
   }
-    
+/* Cambia el color del título del mes en el calendario */
+.fc-toolbar-title {
+    color: #47077f !important; /* Cambia este color al morado deseado */
+  }
+      
