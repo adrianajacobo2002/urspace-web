@@ -8,10 +8,11 @@ import Landing from "./pages/Landing";
 import Login from "./forms/Login";
 import Register from "./forms/Register";
 import Dashboard from "./pages/User";
-import Publicar from "./pages/User/crear-propiedad";
+import Publicar from "./pages/User/get-started";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NoAccess from "./pages/NoAccess/index";
 import OwnerMode from "./pages/User/OwnerMode"
+import CreatePropiedad from "./pages/User/crear-propiedad";
 
 import "./App.css";
 
@@ -70,6 +71,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <OwnerMode />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/crear-propiedad"
+            element={
+              <ProtectedRoute>
+                < CreatePropiedad/>
               </ProtectedRoute>
             }
           />
