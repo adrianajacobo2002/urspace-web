@@ -28,7 +28,6 @@ const PropertiesTab: React.FC = () => {
       {/* Contenedor principal de la pestaña */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <MiniCardGroup />
-        
         {/* Botón de agregar en la esquina superior derecha */}
         <IconButton
           sx={{
@@ -44,9 +43,7 @@ const PropertiesTab: React.FC = () => {
         </IconButton>
       </Box>
 
-      <Typography variant="h6" sx={{ mb: 2, color: "#65348c", paddingY: 3}}>
-        Mis Propiedades
-      </Typography>
+      
 
       {/* Contenedor de las tarjetas de propiedades */}
       <Box display="flex" gap={2} flexWrap="wrap">

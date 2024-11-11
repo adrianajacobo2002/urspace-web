@@ -1,37 +1,37 @@
-// src/components/MiniCardGroup.tsx
-
-import React, { useState } from "react";
+import React from "react";
 import { Box } from "@mui/material";
 import MiniCard from "./MiniCard";
 
-const MiniCardReservation: React.FC = () => {
-  const [activeCard, setActiveCard] = useState("Todas");
+interface MiniCardReservationProps {
+  onFilterChange: (status: string) => void;
+  activeFilter: string;
+  reservationCounts: {
+    Todas: number;
+    Pendiente: number;
+    EnCurso: number;
+  };
+}
 
+const MiniCardReservation: React.FC<MiniCardReservationProps> = ({
+  onFilterChange,
+  activeFilter,
+  reservationCounts,
+}) => {
   const handleCardClick = (label: string) => {
-    setActiveCard(label);
-    // Aquí puedes agregar la lógica para filtrar las propiedades según el label
+    onFilterChange(label);
   };
 
   return (
     <Box display="flex" gap={2}>
-      <MiniCard
-        label="Todas"
-        count={2}
-        isActive={activeCard === "Todas"}
-        onClick={() => handleCardClick("Todas")}
-      />
-      <MiniCard
-        label="Pendiente"
-        count={2}
-        isActive={activeCard === "Pendiente"}
-        onClick={() => handleCardClick("Pendiente")}
-      />
-      <MiniCard
-        label="En Curso"
-        count={0}
-        isActive={activeCard === "En Curso"}
-        onClick={() => handleCardClick("En Curso")}
-      />
+      {["Todas", "Pendiente", "EnCurso"].map((label) => (
+        <MiniCard
+          key={label}
+          label={label === "EnCurso" ? "En Curso" : label}
+          count={reservationCounts[label as keyof typeof reservationCounts]}
+          isActive={activeFilter === label}
+          onClick={() => handleCardClick(label)}
+        />
+      ))}
     </Box>
   );
 };
