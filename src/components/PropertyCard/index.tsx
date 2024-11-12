@@ -1,34 +1,39 @@
 import React from "react";
-import { Typography, Card, CardMedia, CardContent } from "@mui/material";
+import { Box, Typography, Card, CardMedia } from "@mui/material";
 
 interface PropertyCardProps {
-  image: string;
+  images: string[];
   title: string;
   property: string;
   price: string;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ image, title, property, price }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ images, title, property, price }) => {
+  const imageUrl = images.length > 0 ? images[0] : "https://via.placeholder.com/300x140";
+
   return (
-    <Card sx={{ width: 300, borderRadius: 2, boxShadow: 3 }}>
+    <Card sx={{ borderRadius: 2, boxShadow: 2, width: 300 }}>
       <CardMedia
         component="img"
-        height="140"
-        image={image}
+        height="200" // Ajusta la altura de la imagen según sea necesario
+        image={imageUrl}
         alt={title}
-        sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+        sx={{
+          objectFit: "cover", // Asegura que la imagen cubre el área
+          width: "100%",       // Asegura que cubre todo el ancho
+        }}
       />
-      <CardContent>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+      <Box p={2}>
+        <Typography variant="h6" sx={{ color: "black" }}>
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="textSecondary">
           {property}
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: "bold", mt: 1 }}>
-          {price} por noche
+        <Typography variant="body1" fontWeight="bold" color="secondary">
+          {price}
         </Typography>
-      </CardContent>
+      </Box>
     </Card>
   );
 };
