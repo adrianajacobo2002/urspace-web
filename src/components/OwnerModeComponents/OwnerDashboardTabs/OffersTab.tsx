@@ -1,29 +1,26 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import OfferCard from "../../OfferCard"; // Ajusta la ruta si es necesario
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import OfferCard from "../../OfferCard";
+import { getOffersByCurrentUser } from "../../../services/ofertas.service";
 
 const OffersTab: React.FC = () => {
-  // Datos de ejemplo para las ofertas
-  const offers = [
-    {
-      initials: "MB",
-      name: "María B.",
-      property: "Casa de Playa, La Libertad",
-      onMessageClick: () => alert("Mensaje enviado a María B."),
-      onRejectClick: () => alert("Oferta rechazada para María B."),
-    },
-    {
-      initials: "RC",
-      name: "Roberto C.",
-      property: "Villa Bonita, San Salvador",
-      onMessageClick: () => alert("Mensaje enviado a Roberto C."),
-      onRejectClick: () => alert("Oferta rechazada para Roberto C."),
-    },
-  ];
+  const [offers, setOffers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const data = await getOffersByCurrentUser();
+        setOffers(data);
+      } catch (error) {
+        console.error("Error fetching offers:", error);
+      }
+    };
+
+    fetchOffers();
+  }, []);
 
   return (
     <Box>
-      {/* Contenedor de tarjetas de oferta */}
       <Box display="flex" gap={2} flexWrap="wrap">
         {offers.map((offer, index) => (
           <OfferCard
