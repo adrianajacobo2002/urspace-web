@@ -35,12 +35,14 @@ export const createTerreno = async (terrenoData: {
   formData.append('descripcion', terrenoData.descripcion || '');
   formData.append('usuario_id', String(usuario_id)); // Envía el usuario_id desde el frontend
 
-  terrenoData.imagenes?.forEach((imagen) => {
-    formData.append('imagenes', imagen);
-  });
-
+  // Agregar cada etiqueta como un campo separado en FormData
   terrenoData.etiquetas?.forEach((etiquetaId) => {
     formData.append('etiquetas', String(etiquetaId));
+  });
+
+  // Agregar archivos de imágenes
+  terrenoData.imagenes?.forEach((imagen) => {
+    formData.append('imagenes', imagen);
   });
 
   const response = await axios.post(API_URL, formData, {

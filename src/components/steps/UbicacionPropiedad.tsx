@@ -1,19 +1,43 @@
-import React, { useState } from "react";
+// src/components/steps/UbicacionPropiedad.tsx
+import React, { useState, useEffect } from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import axios from "axios";
+
+interface UbicacionPropiedadProps {
+  setIsStepValid: (isValid: boolean) => void;
+  formData: any;
+  setFormData: any;
+}
 
 interface LocationData {
   lat: number;
   lng: number;
 }
 
-const UbicacionPropiedad: React.FC = () => {
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [position, setPosition] = useState<LocationData | null>(null);
+const UbicacionPropiedad: React.FC<UbicacionPropiedadProps> = ({ setIsStepValid, formData, setFormData }) => {
+  const [country, setCountry] = useState(formData.ubicacionPropiedad.pais || "");
+  const [city, setCity] = useState(formData.ubicacionPropiedad.ciudad || "");
+  const [position, setPosition] = useState<LocationData | null>({
+    lat: formData.ubicacionPropiedad.latitud || 13.5,
+    lng: formData.ubicacionPropiedad.longitud || -88.2,
+  });
 
-  // Función para manejar el click en el mapa y actualizar la posición
+  useEffect(() => {
+    // Almacena la ubicación en formData
+    setFormData({
+      ...formData,
+      ubicacionPropiedad: {
+        pais: country,
+        ciudad: city,
+        latitud: position ? position.lat : null,
+        longitud: position ? position.lng : null,
+      },
+    });
+    setIsStepValid(!!country && !!city && !!position); // Marca el paso como válido si hay datos completos
+  }, [country, city, position, setFormData, setIsStepValid]);
+
+  // Maneja el click en el mapa y actualiza la posición
   function LocationMarker() {
     useMapEvents({
       click(e) {
@@ -27,7 +51,6 @@ const UbicacionPropiedad: React.FC = () => {
     return position === null ? null : <Marker position={position} />;
   }
 
-  // Función para buscar la ubicación usando la API de Nominatim (OpenStreetMap)
   const searchLocation = async () => {
     if (!country || !city) return;
 
@@ -52,11 +75,7 @@ const UbicacionPropiedad: React.FC = () => {
 
   return (
     <Box sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ color: "#65348c", mb: 3 }}>
-        Ubicación
-      </Typography>
-
-      {/* Campos para país y ciudad */}
+      <Typography variant="h6" sx={{ color: "#65348c", mb: 3 }}>Ubicación</Typography>
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
           label="País"
@@ -76,32 +95,24 @@ const UbicacionPropiedad: React.FC = () => {
           Buscar
         </Button>
       </Box>
-
-      {/* Campos para latitud y longitud */}
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
           label="Latitud"
           value={position ? position.lat : ""}
-          InputProps={{
-            readOnly: true,
-          }}
+          InputProps={{ readOnly: true }}
           fullWidth
         />
         <TextField
           label="Longitud"
           value={position ? position.lng : ""}
-          InputProps={{
-            readOnly: true,
-          }}
+          InputProps={{ readOnly: true }}
           fullWidth
         />
       </Box>
-
-      {/* Mapa para seleccionar ubicación exacta */}
       <MapContainer center={[13.5, -88.2]} zoom={5} style={{ height: "400px", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; OpenStreetMap contributors'
         />
         <LocationMarker />
       </MapContainer>
