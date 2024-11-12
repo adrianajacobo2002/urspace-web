@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NoAccess from "./pages/NoAccess/index";
 import OwnerMode from "./pages/User/OwnerMode"
 import CreatePropiedad from "./pages/User/crear-propiedad";
+import Navegar from "./pages/User/navegar";
 
 import "./App.css";
 
@@ -79,6 +80,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 < CreatePropiedad/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/navegar"
+            element={
+              <ProtectedRoute>
+                < Navegar/>
               </ProtectedRoute>
             }
           />
