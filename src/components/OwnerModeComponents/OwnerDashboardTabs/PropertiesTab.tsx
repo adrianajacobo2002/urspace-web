@@ -1,34 +1,60 @@
-// src/components/PropertiesTab.tsx
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MiniCardGroup from "../../CountCard/MiniCardGroup";
-import PropertyCard from "../../PropertyCard"; // Ajusta la ruta si es necesario
+import PropertyCard from "../../PropertyCard";
+import { getPropertiesByCurrentUser } from "../../../services/terrenos.service";
+
+interface Property {
+  id: number;
+  images: string[];
+  title: string;
+  property: string;
+  price: string;
+  type: string;
+}
 
 const PropertiesTab: React.FC = () => {
-  // Ejemplo de datos de propiedades
-  const properties = [
-    {
-      image: "https://via.placeholder.com/300x140",
-      title: "Villa Bonita",
-      property: "San Salvador, El Salvador",
-      price: "$65.00 USD",
-    },
-    {
-      image: "https://via.placeholder.com/300x140",
-      title: "Casa Bella",
-      property: "Antigua Guatemala, Guatemala",
-      price: "$120.00 USD",
-    },
-  ];
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [activeFilter, setActiveFilter] = useState("Todas");
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const data = await getPropertiesByCurrentUser();
+        setProperties(data);
+        setFilteredProperties(data);
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+    fetchProperties();
+  }, []);
+
+  const handleFilterChange = (type: string) => {
+    setActiveFilter(type);
+
+    if (type === "Todas") {
+      setFilteredProperties(properties);
+    } else {
+      const filtered = properties.filter((property) => property.type === type);
+      setFilteredProperties(filtered);
+    }
+  };
 
   return (
     <Box>
-      {/* Contenedor principal de la pestaña */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <MiniCardGroup />
-        {/* Botón de agregar en la esquina superior derecha */}
+        <MiniCardGroup
+          onFilterChange={handleFilterChange}
+          activeFilter={activeFilter}
+          propertyCounts={{
+            Todas: properties.length,
+            Alquiler: properties.filter((p) => p.type === "Alquiler").length,
+            Venta: properties.filter((p) => p.type === "Venta").length,
+          }}
+        />
         <IconButton
           sx={{
             backgroundColor: "#65348c",
@@ -43,14 +69,11 @@ const PropertiesTab: React.FC = () => {
         </IconButton>
       </Box>
 
-      
-
-      {/* Contenedor de las tarjetas de propiedades */}
       <Box display="flex" gap={2} flexWrap="wrap">
-        {properties.map((property, index) => (
+        {filteredProperties.map((property) => (
           <PropertyCard
-            key={index}
-            image={property.image}
+            key={property.id}
+            images={property.images}
             title={property.title}
             property={property.property}
             price={property.price}

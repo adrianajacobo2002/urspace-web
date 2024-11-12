@@ -54,3 +54,41 @@ export const createTerreno = async (terrenoData: {
 
   return response.data;
 };
+
+export const getPropertiesByCurrentUser = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const userInfo = await getUserInfo();
+    const usuario_id = userInfo.id_usuario;
+
+    const response = await axios.get(`${API_URL}/usuario/${usuario_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.data) {
+      console.error("No se recibieron propiedades del servidor.");
+      return [];
+    }
+
+    return response.data.map((property: any) => ({
+      id: property.id_terreno,
+      images: property.ImagenTerreno?.map(
+        (image: any) => `http://localhost:3000${image.url_imagen}`
+      ) || [],
+      title: property.nombre,
+      property: property.ubicacion,
+      price: `$${property.precio} USD`,
+      type: property.tipo_terreno,
+    }));
+  } catch (error) {
+    console.error("Error fetching properties:", error);
+    return [];
+  }
+};
+

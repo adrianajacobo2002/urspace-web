@@ -1,36 +1,37 @@
-// src/components/MiniCardGroup.tsx
-
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import MiniCard from "./MiniCard";
 
-const MiniCardGroup: React.FC = () => {
-  const [activeCard, setActiveCard] = useState("Todas");
-
-  const handleCardClick = (label: string) => {
-    setActiveCard(label);
-    // Aquí puedes agregar la lógica para filtrar las propiedades según el label
+interface MiniCardGroupProps {
+  onFilterChange: (type: string) => void;
+  activeFilter: string;
+  propertyCounts: {
+    Todas: number;
+    Alquiler: number;
+    Venta: number;
   };
+}
 
+const MiniCardGroup: React.FC<MiniCardGroupProps> = ({ onFilterChange, activeFilter, propertyCounts }) => {
   return (
     <Box display="flex" gap={2}>
       <MiniCard
         label="Todas"
-        count={2}
-        isActive={activeCard === "Todas"}
-        onClick={() => handleCardClick("Todas")}
+        count={propertyCounts.Todas}
+        isActive={activeFilter === "Todas"}
+        onClick={() => onFilterChange("Todas")}
       />
       <MiniCard
         label="Alquiler"
-        count={2}
-        isActive={activeCard === "Alquiler"}
-        onClick={() => handleCardClick("Alquiler")}
+        count={propertyCounts.Alquiler}
+        isActive={activeFilter === "Alquiler"}
+        onClick={() => onFilterChange("Alquiler")}
       />
       <MiniCard
         label="Venta"
-        count={0}
-        isActive={activeCard === "Venta"}
-        onClick={() => handleCardClick("Venta")}
+        count={propertyCounts.Venta}
+        isActive={activeFilter === "Venta"}
+        onClick={() => onFilterChange("Venta")}
       />
     </Box>
   );
