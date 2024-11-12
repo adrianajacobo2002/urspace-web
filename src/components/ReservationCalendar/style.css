@@ -11,16 +11,16 @@
   
   /* Evento pendiente */
   .event-pending {
-    background-color: #47077f !important;
+    background-color: #65348c !important;
     color: white !important;
-    border-color: #47077f !important; /* Borde del mismo color del fondo */
+    border-color: #65348c !important; /* Borde del mismo color del fondo */
   }
   
   /* Evento en progreso */
   .event-inprogress {
-    background-color: #65348c !important;
+    background-color: #47077f !important;
     color: white !important;
-    border-color: #65348c !important; /* Borde del mismo color del fondo */
+    border-color: #47077f !important; /* Borde del mismo color del fondo */
   }
   
   /* Estilo para el día de hoy */
