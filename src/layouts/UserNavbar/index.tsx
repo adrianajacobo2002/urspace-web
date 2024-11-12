@@ -70,9 +70,10 @@ const LoggedNavbar: React.FC = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#04172b" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "#04172b" }}>
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+        <Typography component={RouterLink}
+            to="/dashboard" variant="h6" sx={{ flexGrow: 1, fontWeight: "bold", color: 'inherit', textDecoration: "none" }}>
           UrSpace
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>

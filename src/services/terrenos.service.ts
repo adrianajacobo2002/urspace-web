@@ -92,3 +92,76 @@ export const getPropertiesByCurrentUser = async () => {
     return [];
   }
 };
+
+export const getAllTerrenos = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.data) {
+      console.error("No se recibieron terrenos del servidor.");
+      return [];
+    }
+
+    return response.data.map((terreno: any) => ({
+      id: terreno.id_terreno,
+      images:
+        terreno.ImagenTerreno?.map(
+          (image: any) => `http://localhost:3000${image.url_imagen}`
+        ) || [],
+      name: terreno.nombre,
+      location: terreno.ubicacion,
+      price: terreno.precio,
+      type: terreno.tipo_terreno === "Venta" ? "Venta" : "Alquiler", // Mapeo según el enum
+      rating:
+        terreno.Valoracion?.reduce((acc: number, val: any) => acc + val.puntuacion, 0) /
+        (terreno.Valoracion?.length || 1),
+    }));
+  } catch (error) {
+    console.error("Error fetching terrenos:", error);
+    return [];
+  }
+};
+
+
+export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}/excluir-usuario/${usuarioId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.data) {
+      console.error("No se recibieron terrenos del servidor.");
+      return [];
+    }
+
+    // Mapear los datos para adecuarlos al formato esperado en tu aplicación, si es necesario.
+    return response.data.map((terreno: any) => ({
+      id: terreno.id_terreno,
+      name: terreno.nombre,
+      location: terreno.ubicacion,
+      price: terreno.precio,
+      type: terreno.tipo_terreno,
+      rating: terreno.Valoracion?.reduce((acc: number, val: any) => acc + val.calificacion, 0) / (terreno.Valoracion?.length || 1) || 0,
+      images: terreno.ImagenTerreno?.map((img: any) => `http://localhost:3000${img.url_imagen}`) || [],
+    }));
+  } catch (error) {
+    console.error("Error al obtener terrenos excluyendo usuario:", error);
+    return [];
+  }
+};
