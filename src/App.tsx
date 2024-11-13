@@ -14,6 +14,7 @@ import NoAccess from "./pages/NoAccess/index";
 import OwnerMode from "./pages/User/OwnerMode"
 import CreatePropiedad from "./pages/User/crear-propiedad";
 import Navegar from "./pages/User/navegar";
+import ChatPage from "./components/ChatComponents/ChatPage"; // Importa tu componente ChatPage
 
 import "./App.css";
 
@@ -88,6 +89,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 < Navegar/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                < ChatPage/>
               </ProtectedRoute>
             }
           />
