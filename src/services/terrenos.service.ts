@@ -78,16 +78,9 @@ export const getPropertiesByCurrentUser = async () => {
 
     return response.data.map((property: any) => ({
       id: property.id_terreno,
-<<<<<<< HEAD
-      images:
-        property.ImagenTerreno?.map(
-          (image: any) => `http://localhost:3000${image.url_imagen}`
-        ) || [],
-=======
       images: property.ImagenTerreno?.map(
         (image: any) => `http://localhost:3000${image.url_imagen}`
       ) || [],
->>>>>>> 2c17d54 (Propiedades)
       title: property.nombre,
       property: property.ubicacion,
       price: `$${property.precio} USD`,
@@ -99,7 +92,6 @@ export const getPropertiesByCurrentUser = async () => {
   }
 };
 
-<<<<<<< HEAD
 export const getAllTerrenos = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -172,5 +164,3 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
     return [];
   }
 };
-=======
->>>>>>> 2c17d54 (Propiedades)
