@@ -165,3 +165,28 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
     return [];
   }
 };
+
+interface FilterTerrenosParams {
+  country?: string;
+  city?: string;
+  etiquetas?: number[];
+}
+
+export const fetchFilteredTerrenos = async (country: string, city: string, etiquetas: number[]) => {
+  try {
+    const filters: FilterTerrenosParams = {
+      country: country || undefined,
+      city: city || undefined,
+      etiquetas: etiquetas.length > 0 ? etiquetas : undefined,
+    };
+
+    const response = await axios.post(`${API_URL}/filtrar`, filters);
+    return response.data;
+  } catch (error) {
+    console.error('Error al filtrar terrenos:', error);
+    throw error;
+  }
+};
+
+
+
