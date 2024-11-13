@@ -78,10 +78,9 @@ export const getPropertiesByCurrentUser = async () => {
 
     return response.data.map((property: any) => ({
       id: property.id_terreno,
-      images:
-        property.ImagenTerreno?.map(
-          (image: any) => `http://localhost:3000${image.url_imagen}`
-        ) || [],
+      images: property.ImagenTerreno?.map(
+        (image: any) => `http://localhost:3000${image.url_imagen}`
+      ) || [],
       title: property.nombre,
       property: property.ubicacion,
       price: `$${property.precio} USD`,

@@ -59,14 +59,14 @@ const LoggedNavbar: React.FC = () => {
     navigate("/owner-mode"); // Navega a la página de modo propietario
   };
 
-  const handleNavigateToMessages = () => {
-    navigate("/mensajes");
-  };
-
   const handleLogout = () => {
     handleMenuClose();
     localStorage.removeItem("token"); // Elimina el token de autenticación
     navigate("/login"); // Redirige al usuario a la página de inicio de sesión
+  };
+
+  const handleChatClick = () => {
+    navigate("/chat"); // Navega a la página de chat
   };
 
   return (
@@ -101,7 +101,7 @@ const LoggedNavbar: React.FC = () => {
           >
             Crear Propiedad
           </Typography>
-          <IconButton color="inherit" sx={{ marginRight: "50px" }}  onClick={handleNavigateToMessages}>
+          <IconButton color="inherit" sx={{ marginRight: "50px" }} onClick={handleChatClick}>
             <ChatBubbleIcon />
           </IconButton>
           <IconButton color="inherit" sx={{ marginRight: "50px" }}>

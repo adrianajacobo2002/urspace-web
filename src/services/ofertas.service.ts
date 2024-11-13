@@ -64,12 +64,12 @@ export const getOffersByCurrentUser = async () => {
       }
   
       return response.data.map((offer: any) => {
-        // Asegúrate de que estás accediendo correctamente a `nombres` y `apellidos`
         const nombre = offer.Usuario?.nombres || "N/A";
         const apellido = offer.Usuario?.apellidos || "";
         const initials = `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase();
   
         return {
+          id_oferta: offer.id_oferta,  // Incluye id_oferta aquí
           initials: initials,
           name: `${nombre} ${apellido.charAt(0)}.`,
           property: `${offer.Terreno.nombre}, ${offer.Terreno.ubicacion}`,
@@ -82,4 +82,7 @@ export const getOffersByCurrentUser = async () => {
       return [];
     }
   };
+  
+
+  
   
