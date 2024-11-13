@@ -1,14 +1,12 @@
-// src/components/FilterModal.tsx
-
 import React, { useEffect, useState } from 'react';
-import { Box, Modal, Typography, TextField, Button, Chip } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, Modal, Typography, Button, Chip } from '@mui/material';
+import LocationSearch from "../LocationSearch";
 import { fetchEtiquetas } from '../../services/etiquetas.service';
 
 interface FilterModalProps {
   open: boolean;
   onClose: () => void;
-  onApplyFilters: () => void;
+  onApplyFilters: (country: string, city: string, etiquetas: number[]) => void;
   onClearFilters: () => void;
 }
 
@@ -20,8 +18,11 @@ interface Etiqueta {
 const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters, onClearFilters }) => {
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [selectedEtiquetas, setSelectedEtiquetas] = useState<number[]>([]);
+  const [country, setCountry] = useState<string>('');
+  const [city, setCity] = useState<string>('');
 
   useEffect(() => {
+    console.log("Modal FilterModal se ha montado o actualizado");
     const fetchData = async () => {
       try {
         const etiquetasData = await fetchEtiquetas();
@@ -42,6 +43,14 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
     );
   };
 
+  const handleApplyFiltersClick = () => {
+    console.log('Botón Aplicar Filtros presionado'); // Verificar si el botón se presiona
+    console.log('País seleccionado:', country, 'Ciudad seleccionada:', city, 'Etiquetas seleccionadas:', selectedEtiquetas);
+    console.log('Aplicando filtros:', { country, city, selectedEtiquetas }); // Agrega este console.log para verificar
+    onApplyFilters(country, city, selectedEtiquetas);
+    onClose();
+  };
+
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="filter-modal-title">
       <Box
@@ -57,24 +66,15 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
           borderRadius: 2,
         }}
       >
-        <Typography id="filter-modal-title" variant="h6" sx={{ mb: 2 }}>
-          Ubicación
-        </Typography>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <SearchIcon />
-          <TextField
-            placeholder="Buscar ubicación"
-            variant="standard"
-            fullWidth
-            sx={{ ml: 1 }}
-          />
-        </Box>
+        <LocationSearch
+          onCountryChange={setCountry}
+          onCityChange={setCity}
+        />
 
         <Typography variant="h6" sx={{ mb: 1 }}>
           Etiquetas
         </Typography>
-        
+
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
           {etiquetas.map((etiqueta) => (
             <Chip
@@ -92,7 +92,10 @@ const FilterModal: React.FC<FilterModalProps> = ({ open, onClose, onApplyFilters
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={onApplyFilters}>
+          <Button variant="contained" color="primary" onClick={() => {
+    console.log("Botón Aplicar Filtros presionado en el modal"); // Verifica si se muestra este mensaje
+    handleApplyFiltersClick();
+  }}>
             Aplicar Filtros
           </Button>
           <Button variant="contained" color="error" onClick={onClearFilters}>
