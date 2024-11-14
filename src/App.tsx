@@ -15,6 +15,7 @@ import OwnerMode from "./pages/User/OwnerMode"
 import CreatePropiedad from "./pages/User/crear-propiedad";
 import Navegar from "./pages/User/navegar";
 import ChatPage from "./components/ChatComponents/ChatPage"; // Importa tu componente ChatPage
+import TerrenoDetalle  from "./components/TerrenoDetalle";
 
 import "./App.css";
 
@@ -97,6 +98,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 < ChatPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/terreno/:id"
+            element={
+              <ProtectedRoute>
+                < TerrenoDetalle/>
               </ProtectedRoute>
             }
           />

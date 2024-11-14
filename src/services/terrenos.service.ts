@@ -149,21 +149,45 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
       return [];
     }
 
-    // Mapear los datos para adecuarlos al formato esperado en tu aplicación, si es necesario.
-    return response.data.map((terreno: any) => ({
-      id: terreno.id_terreno,
-      name: terreno.nombre,
-      location: terreno.ubicacion,
-      price: terreno.precio,
-      type: terreno.tipo_terreno,
-      rating: terreno.Valoracion?.reduce((acc: number, val: any) => acc + val.calificacion, 0) / (terreno.Valoracion?.length || 1) || 0,
-      images: terreno.ImagenTerreno?.map((img: any) => `http://localhost:3000${img.url_imagen}`) || [],
-    }));
+    // Log para verificar el contenido de ImagenTerreno
+    console.log("Datos de ImagenTerreno recibidos:", response.data.map((terreno: any) => terreno.ImagenTerreno));
+
+    // Mapear los datos a las propiedades necesarias
+    const terrenosMapeados = response.data.map((terreno: any) => {
+      const images = terreno.ImagenTerreno
+        ? terreno.ImagenTerreno.map((img: any) => {
+            const urlCompleta = `http://localhost:3000${img.url_imagen}`;
+            console.log("URL completa generada para imagen:", urlCompleta);
+            return urlCompleta;
+          })
+        : [];
+    
+      return {
+        id: terreno.id_terreno,
+        name: terreno.nombre,
+        location: terreno.ubicacion,
+        price: terreno.precio,
+        type: terreno.tipo_terreno,
+        rating:
+          terreno.Valoracion?.reduce(
+            (acc: number, val: any) => acc + val.calificacion,
+            0
+          ) /
+            (terreno.Valoracion?.length || 1) ||
+          0,
+        images: images,
+      };
+    });
+    // Log para verificar que el mapeo de las imágenes es correcto
+    console.log("Terrenos mapeados:", terrenosMapeados);
+
+    return terrenosMapeados;
   } catch (error) {
     console.error("Error al obtener terrenos excluyendo usuario:", error);
     return [];
   }
 };
+
 
 interface FilterTerrenosParams {
   country?: string;
@@ -187,5 +211,57 @@ export const fetchFilteredTerrenos = async (country: string, city: string, etiqu
   }
 };
 
+export const getTerrenoById = async (id: number) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
 
+  try {
+    const response = await axios.get(`${API_URL}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
+    if (!response.data) {
+      console.error("No se recibió el terreno del servidor.");
+      return null;
+    }
+
+    console.log("Datos del terreno recibidos:", response.data);
+
+    // Realizamos un chequeo para verificar que la respuesta tiene los datos necesarios
+    const terrenoData = {
+      id: response.data.id_terreno,
+      name: response.data.nombre || "Nombre no disponible",
+      location: response.data.ubicacion || "Ubicación no disponible",
+      price: response.data.precio || 0,
+      type: response.data.tipo_terreno || "Desconocido",
+      rating:
+        response.data.Valoracion?.reduce(
+          (acc: number, val: any) => acc + (val.calificacion || 0),
+          0
+        ) / (response.data.Valoracion?.length || 1) || 0,
+      images: response.data.ImagenTerreno
+        ? response.data.ImagenTerreno.map((img: any) => `http://localhost:3000${img.url_imagen}`)
+        : [],
+      description: response.data.descripcion || "Descripción no disponible",
+      capacity: response.data.capacidad || 0,
+      reservations: response.data.Reservacion || [],
+      etiquetas: response.data.etiquetas ? response.data.etiquetas.map((etiqueta: any) => etiqueta || "Etiqueta desconocida") : [],
+      usuario: {
+        nombre: response.data.Usuario.nombres,
+        apellido: response.data.Usuario.apellidos,
+        email: response.data.Usuario.email,
+      },
+    };
+
+    console.log("Datos del terreno mapeado:", terrenoData);
+
+    return terrenoData;
+  } catch (error) {
+    console.error("Error al obtener detalle del terreno:", error);
+    throw error;
+  }
+};
