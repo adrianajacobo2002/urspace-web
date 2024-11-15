@@ -1,10 +1,14 @@
 // src/pages/Dashboard.tsx
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Box, Typography, Button, keyframes } from "@mui/material";
 import ParticlesBackground from "../../components/ParticleBg";
 import AstronautImage from "../../assets/img/astronauta_explorando.svg";
 import Navbar from "../../layouts/UserNavbar";
 import PlanetImage from "../../assets/img/planeta.png"; // Imagen del planeta
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 
 // Definición de la animación de flotación
 const floatAnimation = keyframes`
@@ -20,6 +24,22 @@ const floatAnimation = keyframes`
 `;
 
 const Dashboard: React.FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleViewNavegar = () => {
+    handleMenuClose();
+    navigate("/navegar");
+  };
+
+  const handleViewPublicar = () => {
+    handleMenuClose();
+    navigate("/publicar");
+  };
+
   return (
     <Box
       sx={{
@@ -71,6 +91,7 @@ const Dashboard: React.FC = () => {
                 textTransform: "none",
                 fontSize: "1rem",
               }}
+              onClick={handleViewNavegar}
             >
               Buscar Terreno
             </Button>
@@ -83,6 +104,7 @@ const Dashboard: React.FC = () => {
                 textTransform: "none",
                 fontSize: "1rem",
               }}
+              onClick={handleViewPublicar}
             >
               Publicar Terreno
             </Button>

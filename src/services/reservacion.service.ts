@@ -148,3 +148,49 @@ export const cancelarReserva = async (id_reservacion: number) => {
     throw error;
   }
 };
+
+export const getReservasRealizadasPorUsuario = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No se encontró un token");
+    }
+
+    // Obtener id del usuario actual
+    const userResponse = await getUserInfo();
+    const id_usuario = userResponse.id_usuario;
+
+    // Obtener reservas del usuario
+    const reservasResponse = await axios.get(
+      `${API_URL}/reservas/realizadas/${id_usuario}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Mapear los datos completos para el componente
+    const mappedReservas = reservasResponse.data.map((reserva: any) => ({
+      id_reservacion: reserva.id_reservacion,
+      property: reserva.Terreno?.nombre || "Propiedad no disponible",
+      ubicacion: reserva.Terreno?.ubicacion || "Ubicación no disponible",
+      estado: reserva.estado || "Sin estado",
+      fecha_inicio: reserva.fecha_inicio,
+      fecha_fin: reserva.fecha_fin,
+      impuestos: reserva.impuestos || 0,
+      subtotal: reserva.subtotal || 0,
+      precio_total: reserva.precio_total ?? null,
+      capacidad: reserva.Terreno?.capacidad || "Capacidad no disponible",
+      precio_noche: reserva.Terreno?.precio || 0,
+      descripcion: reserva.Terreno?.descripcion || "Sin descripción",
+      propietario_nombre: `${reserva.Terreno?.Usuario?.nombres ?? "Nombre no disponible"} ${reserva.Terreno?.Usuario?.apellidos ?? "Apellidos no disponibles"}`,
+      propietario_correo: reserva.Terreno?.Usuario?.email || "Correo no disponible",
+    }));
+    
+    return mappedReservas;
+  } catch (error) {
+    console.error("Error obteniendo reservas realizadas por el usuario:", error);
+    throw error;
+  }
+};

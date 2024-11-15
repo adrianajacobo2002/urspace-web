@@ -4,6 +4,8 @@ import AddIcon from "@mui/icons-material/Add";
 import MiniCardGroup from "../../CountCard/MiniCardGroup";
 import PropertyCard from "../../PropertyCard";
 import { getPropertiesByCurrentUser } from "../../../services/terrenos.service";
+import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 interface Property {
   id: number;
@@ -18,6 +20,8 @@ const PropertiesTab: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [activeFilter, setActiveFilter] = useState("Todas");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -43,6 +47,15 @@ const PropertiesTab: React.FC = () => {
     }
   };
 
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAddPropiedad = () => {
+    handleMenuClose();
+    navigate("/publicar");
+  };
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -56,6 +69,7 @@ const PropertiesTab: React.FC = () => {
           }}
         />
         <IconButton
+        onClick={handleAddPropiedad}
           sx={{
             backgroundColor: "#65348c",
             color: "#fff",
@@ -64,6 +78,7 @@ const PropertiesTab: React.FC = () => {
               backgroundColor: "#4e278c",
             },
           }}
+          
         >
           <AddIcon />
         </IconButton>
