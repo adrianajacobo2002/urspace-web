@@ -1,3 +1,5 @@
+/* En index.css o el archivo de estilos globales */
+@import "leaflet/dist/leaflet.css";
 
 :root {
   line-height: 1.5;
