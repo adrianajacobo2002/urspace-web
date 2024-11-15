@@ -43,46 +43,46 @@ export const deleteOffer = async (id_oferta: number) => {
 };
 
 export const getOffersByCurrentUser = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("Usuario no autenticado");
-    }
-  
-    try {
-      const userInfo = await getUserInfo();
-      const usuario_id = userInfo.id_usuario;
-  
-      const response = await axios.get(`${API_URL}/usuario/${usuario_id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (!response.data) {
-        console.error("No se recibieron ofertas del servidor.");
-        return [];
-      }
-  
-      return response.data.map((offer: any) => {
-        const nombre = offer.Usuario?.nombres || "N/A";
-        const apellido = offer.Usuario?.apellidos || "";
-        const initials = `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase();
-  
-        return {
-          id_oferta: offer.id_oferta,  // Incluye id_oferta aquí
-          initials: initials,
-          name: `${nombre} ${apellido.charAt(0)}.`,
-          property: `${offer.Terreno.nombre}, ${offer.Terreno.ubicacion}`,
-          onMessageClick: () => console.log(`Enviar mensaje a ${nombre}`),
-          onRejectClick: () => console.log(`Rechazar oferta de ${nombre}`),
-        };
-      });
-    } catch (error) {
-      console.error("Error fetching offers:", error);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const userInfo = await getUserInfo();
+    const usuario_id = userInfo.id_usuario;
+
+    const response = await axios.get(`${API_URL}/usuario/${usuario_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.data) {
+      console.error("No se recibieron ofertas del servidor.");
       return [];
     }
-  };
-  
+
+    return response.data.map((offer: any) => {
+      const nombre = offer.Usuario?.nombres || "N/A";
+      const apellido = offer.Usuario?.apellidos || "";
+      const initials = `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase();
+
+      return {
+        id_oferta: offer.id_oferta,  // Incluye id_oferta aquí
+        usuario_id: offer.Usuario.id_usuario, // Incluye el ID del usuario que hizo la oferta
+        initials: initials,
+        name: `${nombre} ${apellido.charAt(0)}.`,
+        property: `${offer.Terreno.nombre}, ${offer.Terreno.ubicacion}`,
+        onMessageClick: () => console.log(`Enviar mensaje a ${nombre}`),
+        onRejectClick: () => console.log(`Rechazar oferta de ${nombre}`),
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching offers:", error);
+    return [];
+  }
+};
 
   
   

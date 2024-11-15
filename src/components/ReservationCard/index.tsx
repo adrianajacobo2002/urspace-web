@@ -1,5 +1,7 @@
 import React from "react";
 import { Box, Typography, Card, Avatar, Button } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface ReservationCardProps {
   initials: string;
@@ -8,7 +10,9 @@ interface ReservationCardProps {
   dateEnd: string;
   status: string;
   property: string;
-  onMessageClick?: () => void;
+  usuarioDestinatarioId: number; // ID del usuario destinatario
+  loggedInUserId: number; // ID del usuario logueado
+  onMessageClick?: (conversationId: number, otherUserName: string, otherUserInitials: string) => void;
 }
 
 const ReservationCard: React.FC<ReservationCardProps> = ({
@@ -18,10 +22,31 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
   dateEnd,
   status,
   property,
+  usuarioDestinatarioId,
+  loggedInUserId,
   onMessageClick,
 }) => {
+  const navigate = useNavigate(); // Añadir useNavigate para la redirección
   const formattedStartDate = new Date(dateStart).toLocaleDateString("es-ES");
   const formattedEndDate = new Date(dateEnd).toLocaleDateString("es-ES");
+
+  const handleSendMessage = async () => {
+    try {
+      // Solicitar la conversación o crear una nueva si no existe
+      const response = await axios.post("http://localhost:3000/api/conversaciones/find-or-create", {
+        usuario_remitente_id: loggedInUserId,
+        usuario_destinatario_id: usuarioDestinatarioId,
+      });
+      
+      const conversacion = response.data;
+      console.log("Conversación encontrada o creada:", conversacion);
+
+      // Redirigir a la página de chat con el ID de la conversación
+      navigate(`/chat`);
+    } catch (error) {
+      console.error("Error al encontrar o crear conversación:", error);
+    }
+  };
 
   return (
     <Card sx={{ p: 2, borderRadius: 2, boxShadow: 2, width: 400 }}>
@@ -42,7 +67,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
         <Button
           variant="contained"
           color="primary"
-          onClick={onMessageClick}
+          onClick={handleSendMessage}
           sx={{ backgroundColor: "#65348c", textTransform: "none" }}
         >
           Enviar Mensaje
