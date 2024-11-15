@@ -16,6 +16,8 @@ import CreatePropiedad from "./pages/User/crear-propiedad";
 import Navegar from "./pages/User/navegar";
 import ChatPage from "./components/ChatComponents/ChatPage"; // Importa tu componente ChatPage
 import TerrenoDetalle  from "./components/TerrenoDetalle";
+import PerfilUsuario from "./pages/User/perfil";
+import Notificaciones from "./pages/User/notificaciones";
 
 import "./App.css";
 
@@ -53,6 +55,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
           <Route path="/no-access" element={<NoAccess />} />
+          <Route path="/profile" element={<PerfilUsuario />} />
           <Route
             path="/dashboard"
             element={
@@ -106,6 +109,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 < TerrenoDetalle/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notificaciones"
+            element={
+              <ProtectedRoute>
+                < Notificaciones/>
               </ProtectedRoute>
             }
           />

@@ -78,9 +78,10 @@ export const getPropertiesByCurrentUser = async () => {
 
     return response.data.map((property: any) => ({
       id: property.id_terreno,
-      images: property.ImagenTerreno?.map(
-        (image: any) => `http://localhost:3000${image.url_imagen}`
-      ) || [],
+      images:
+        property.ImagenTerreno?.map(
+          (image: any) => `http://localhost:3000${image.url_imagen}`
+        ) || [],
       title: property.nombre,
       property: property.ubicacion,
       price: `$${property.precio} USD`,
@@ -121,15 +122,16 @@ export const getAllTerrenos = async () => {
       price: terreno.precio,
       type: terreno.tipo_terreno === "Venta" ? "Venta" : "Alquiler", // Mapeo según el enum
       rating:
-        terreno.Valoracion?.reduce((acc: number, val: any) => acc + val.puntuacion, 0) /
-        (terreno.Valoracion?.length || 1),
+        terreno.Valoracion?.reduce(
+          (acc: number, val: any) => acc + val.puntuacion,
+          0
+        ) / (terreno.Valoracion?.length || 1),
     }));
   } catch (error) {
     console.error("Error fetching terrenos:", error);
     return [];
   }
 };
-
 
 export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
   const token = localStorage.getItem("token");
@@ -138,11 +140,14 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
   }
 
   try {
-    const response = await axios.get(`${API_URL}/excluir-usuario/${usuarioId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/excluir-usuario/${usuarioId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (!response.data) {
       console.error("No se recibieron terrenos del servidor.");
@@ -150,7 +155,10 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
     }
 
     // Log para verificar el contenido de ImagenTerreno
-    console.log("Datos de ImagenTerreno recibidos:", response.data.map((terreno: any) => terreno.ImagenTerreno));
+    console.log(
+      "Datos de ImagenTerreno recibidos:",
+      response.data.map((terreno: any) => terreno.ImagenTerreno)
+    );
 
     // Mapear los datos a las propiedades necesarias
     const terrenosMapeados = response.data.map((terreno: any) => {
@@ -161,7 +169,7 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
             return urlCompleta;
           })
         : [];
-    
+
       return {
         id: terreno.id_terreno,
         name: terreno.nombre,
@@ -172,9 +180,7 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
           terreno.Valoracion?.reduce(
             (acc: number, val: any) => acc + val.calificacion,
             0
-          ) /
-            (terreno.Valoracion?.length || 1) ||
-          0,
+          ) / (terreno.Valoracion?.length || 1) || 0,
         images: images,
       };
     });
@@ -188,14 +194,17 @@ export const getTerrenosExcluyendoUsuario = async (usuarioId: number) => {
   }
 };
 
-
 interface FilterTerrenosParams {
   country?: string;
   city?: string;
   etiquetas?: number[];
 }
 
-export const fetchFilteredTerrenos = async (country: string, city: string, etiquetas: number[]) => {
+export const fetchFilteredTerrenos = async (
+  country: string,
+  city: string,
+  etiquetas: number[]
+) => {
   try {
     const filters: FilterTerrenosParams = {
       country: country || undefined,
@@ -206,7 +215,7 @@ export const fetchFilteredTerrenos = async (country: string, city: string, etiqu
     const response = await axios.post(`${API_URL}/filtrar`, filters);
     return response.data;
   } catch (error) {
-    console.error('Error al filtrar terrenos:', error);
+    console.error("Error al filtrar terrenos:", error);
     throw error;
   }
 };
@@ -231,6 +240,23 @@ export const getTerrenoById = async (id: number) => {
 
     console.log("Datos del terreno recibidos:", response.data);
 
+    const valoraciones =
+      response.data.Valoracion?.map((valoracion: any) => ({
+        usuario: {
+          nombre: valoracion.Usuario.nombres,
+          apellido: valoracion.Usuario.apellidos,
+        },
+        calificacion: valoracion.calificacion,
+        comentario: valoracion.comentario,
+        fecha: valoracion.fecha_valoracion.split("T")[0], // Formato YYYY-MM-DD
+      })) || [];
+
+    const promedioCalificacion =
+      valoraciones.reduce(
+        (acc: number, val: any) => acc + (val.calificacion || 0),
+        0
+      ) / (valoraciones.length || 1);
+
     // Realizamos un chequeo para verificar que la respuesta tiene los datos necesarios
     const terrenoData = {
       id: response.data.id_terreno,
@@ -238,23 +264,30 @@ export const getTerrenoById = async (id: number) => {
       location: response.data.ubicacion || "Ubicación no disponible",
       price: response.data.precio || 0,
       type: response.data.tipo_terreno || "Desconocido",
-      rating:
-        response.data.Valoracion?.reduce(
-          (acc: number, val: any) => acc + (val.calificacion || 0),
-          0
-        ) / (response.data.Valoracion?.length || 1) || 0,
+      rating: promedioCalificacion,
       images: response.data.ImagenTerreno
-        ? response.data.ImagenTerreno.map((img: any) => `http://localhost:3000${img.url_imagen}`)
+        ? response.data.ImagenTerreno.map(
+            (img: any) => `http://localhost:3000${img.url_imagen}`
+          )
         : [],
       description: response.data.descripcion || "Descripción no disponible",
       capacity: response.data.capacidad || 0,
       reservations: response.data.Reservacion || [],
-      etiquetas: response.data.etiquetas ? response.data.etiquetas.map((etiqueta: any) => etiqueta || "Etiqueta desconocida") : [],
+      etiquetas: response.data.etiquetas
+        ? response.data.etiquetas.map(
+            (etiqueta: any) => etiqueta || "Etiqueta desconocida"
+          )
+        : [],
       usuario: {
         nombre: response.data.Usuario.nombres,
         apellido: response.data.Usuario.apellidos,
         email: response.data.Usuario.email,
       },
+      latitud: response.data.latitud,
+      longitud: response.data.longitud,
+      promedioCalificacion,
+      totalResenas: valoraciones.length,
+      resenas: valoraciones,
     };
 
     console.log("Datos del terreno mapeado:", terrenoData);

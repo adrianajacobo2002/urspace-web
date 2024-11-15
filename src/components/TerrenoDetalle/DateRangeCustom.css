@@ -1,0 +1,58 @@
+/* Fuente y tamaño de texto en el calendario */
+.rdrCalendarWrapper, .rdrDateDisplayItem input {
+  font-family: "Onest", sans-serif;
+  font-size: 16px; /* Aumenta el tamaño de la fuente */
+}
+  
+/* Colores personalizados para el rango de fechas */
+.rdrStartEdge,
+.rdrEndEdge,
+.rdrInRange {
+  background-color: #65348c !important; /* Color del rango de fechas */
+}
+  
+/* Color de selección inicial/final */
+.rdrSelected {
+  background-color: #f0ecec !important;
+}
+  
+/* Color del día actual */
+.rdrDayToday .rdrDayNumber span {
+  color: white !important;
+  font-weight: bold;
+}
+  
+/* Color del borde y fondo del contenedor del calendario */
+.rdrDateRangePickerWrapper {
+  border: 1px solid #589237;
+  background-color: #f0ecec;
+  border-radius: 8px;
+}
+  
+/* Cambia el color de texto en general */
+.rdrMonthAndYearPickers select,
+.rdrDayNumber span {
+  color: #65348c; /* Cambia a morado en lugar de azul */
+}
+  
+/* Ajustes para botones de navegación */
+.rdrNextPrevButton {
+  color: #589237;
+}
+  
+/* Aumenta el tamaño del texto en los días */
+.rdrDayNumber span, .rdrDateDisplayItem input {
+  font-size: 1.2rem; /* Tamaño más grande para los números */
+}
+
+/* Estilo para días deshabilitados */
+.rdrDayDisabled span {
+  color: #ccc !important;
+  pointer-events: none;
+}
+
+/* Personalización del rango de fechas para mejor visibilidad */
+.rdrDayHovered .rdrInRange {
+  background-color: #7fc243 !important;
+  opacity: 0.8;
+}
