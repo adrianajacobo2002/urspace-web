@@ -69,6 +69,10 @@ const LoggedNavbar: React.FC = () => {
     navigate("/chat"); // Navega a la página de chat
   };
 
+  const handleNotificationClick = () => {
+    navigate("/notificaciones"); // Navega a la página de chat
+  };
+
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "#04172b" }}>
       <Toolbar>
@@ -104,7 +108,7 @@ const LoggedNavbar: React.FC = () => {
           <IconButton color="inherit" sx={{ marginRight: "50px" }} onClick={handleChatClick}>
             <ChatBubbleIcon />
           </IconButton>
-          <IconButton color="inherit" sx={{ marginRight: "50px" }}>
+          <IconButton color="inherit" sx={{ marginRight: "50px" }} onClick={handleNotificationClick}>
             <NotificationsIcon />
           </IconButton>
           <IconButton onClick={handleMenuOpen}>
