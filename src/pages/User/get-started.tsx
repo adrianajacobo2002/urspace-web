@@ -22,8 +22,9 @@ const GetStarted: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <Navbar />
       <ParticlesBackground />
+      <Navbar />
+      
       <Box
         sx={{
           backgroundColor: "#ffffff",

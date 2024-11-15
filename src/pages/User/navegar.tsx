@@ -63,10 +63,12 @@ const Navegar: React.FC = () => {
             images: terreno?.ImagenTerreno
               ? terreno.ImagenTerreno.map((img: any) => img.url_imagen)
               : [],
+            
           };
         });
 
         console.log("Terrenos mapeados:", mappedTerrenos);
+        
         setTerrenos(mappedTerrenos);
       } catch (error) {
         console.error("Error al obtener terrenos:", error);

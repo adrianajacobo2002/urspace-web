@@ -210,11 +210,14 @@ const PerfilUsuario: React.FC = () => {
           <TabPanel value={tabValue} index={2}>
             <Grid container spacing={2}>
               {filterReservasByEstado("Completada").length > 0 ? (
-                filterReservasByEstado("Completada").map((reserva) => (
-                  <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
-                    <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={true} />
-                  </Grid>
-                ))
+                filterReservasByEstado("Completada").map((reserva) => {
+                  console.log(`ID del terreno en reserva (Completada): ${reserva.id_terreno}`); // Verifica id_terreno aquí
+                  return(
+                    <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
+                      <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={true} />
+                    </Grid>
+                  );
+                  })
               ) : (
                 <Typography variant="body1" sx={{color:"white"}}>No hay reservas completas.</Typography>
               )}

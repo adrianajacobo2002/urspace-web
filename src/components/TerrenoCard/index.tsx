@@ -36,6 +36,7 @@ const TerrenoCard: React.FC<TerrenoCardProps> = ({
   };
 
   console.log("Imágenes recibidas en TerrenoCard:", images); // Verificar las URLs de las imágenes
+  console.log("Imprimiendo imagenes",images)
 
   return (
     <Card sx={{ width: 300, height: 350, borderRadius: 2, boxShadow: 3, overflow: 'hidden' }} onClick={handleClick}>
