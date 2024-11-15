@@ -23,7 +23,10 @@ const GetStarted: React.FC = () => {
       }}
     >
       <ParticlesBackground />
-      <Navbar />
+      {/* Navbar se queda en la parte superior */}
+      <Box sx={{ position: "absolute", top: 0, width: "100%", zIndex: 2 }}>
+        <Navbar />
+      </Box>
       
       <Box
         sx={{
