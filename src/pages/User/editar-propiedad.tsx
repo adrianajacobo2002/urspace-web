@@ -1,8 +1,7 @@
-// src/components/EditPropertyForm.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTerrenoById, updateTerreno } from "../../services/terrenos.service";
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import ParticlesBackground from "../../components/ParticleBg";
 import Navbar from "../../layouts/UserNavbar";
 
@@ -40,11 +39,11 @@ const Edit: React.FC = () => {
     fetchPropertyData();
   }, [id]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "capacidad" || name === "precio" ? Number(value) : value,
+      [name as string]: name === "capacidad" || name === "precio" ? Number(value) : value,
     }));
   };
 
@@ -96,14 +95,18 @@ const Edit: React.FC = () => {
               fullWidth
               sx={{ mb: 2 }}
             />
-            <TextField
-              label="Tipo de propiedad"
-              name="tipo_terreno"
-              value={formData.tipo_terreno}
-              onChange={handleInputChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Tipo de propiedad</InputLabel>
+              <Select
+                label="Tipo de propiedad"
+                name="tipo_terreno"
+                value={formData.tipo_terreno}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="Alquiler">Alquiler</MenuItem>
+                <MenuItem value="Venta">Venta</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
           <TextField
             label="Descripcion"

@@ -46,6 +46,7 @@ const PropertiesTab: React.FC = () => {
   };
 
   const handleDeleteProperty = (id: number) => {
+    // Actualiza el estado de propiedades eliminando el elemento por id
     setProperties((prevProperties) => prevProperties.filter((property) => property.id !== id));
     setFilteredProperties((prevFilteredProperties) =>
       prevFilteredProperties.filter((property) => property.id !== id)
@@ -58,7 +59,6 @@ const PropertiesTab: React.FC = () => {
 
   return (
     <Box>
-      
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <MiniCardGroup
           onFilterChange={handleFilterChange}
@@ -91,7 +91,7 @@ const PropertiesTab: React.FC = () => {
             title={property.title}
             property={property.property}
             price={property.price}
-            onDelete={handleDeleteProperty}
+            onDelete={handleDeleteProperty} // Pasar handleDeleteProperty como callback
           />
         ))}
       </Box>
