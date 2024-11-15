@@ -50,7 +50,15 @@ export const getAllReservasByCurrentUser = async () => {
       }
     );
 
-    return reservasResponse.data;
+    const mappedReservas = reservasResponse.data.map((reserva: any) => ({
+      id_reservacion: reserva.id_reservacion,
+      property: reserva.Terreno?.nombre || "Propiedad no disponible",
+      ubicacion: reserva.Terreno?.ubicacion || "Ubicación no disponible",
+      estado: reserva.estado || "Sin estado",
+      precio_total: reserva.precio_total ?? null, // Usa null si no está definido
+    }));
+
+    return mappedReservas;
   } catch (error) {
     console.error("Error obteniendo todas las reservaciones:", error);
     throw error;
@@ -115,6 +123,28 @@ export const getReservasCountByEstado = async (estado: string) => {
     return filteredReservas.length;
   } catch (error) {
     console.error("Error obteniendo conteo de reservaciones por estado:", error);
+    throw error;
+  }
+};
+
+
+export const cancelarReserva = async (id_reservacion: number) => {
+  try {
+    const token = getToken();
+
+    const response = await axios.patch(
+      `${API_URL}/reservas/cancelar/${id_reservacion}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al cancelar la reserva:", error);
     throw error;
   }
 };

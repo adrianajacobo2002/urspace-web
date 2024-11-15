@@ -1,16 +1,18 @@
 // src/pages/Dashboard.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Tabs,
   Tab,
   Typography,
-  
-  Avatar,
-  
+  Grid 
 } from "@mui/material";
 import Navbar from "../../layouts/UserNavbar";
-import UserCard from "../../components/CardUser/index"
+import CardUser from "../../components/CardUser/index";
+import AvatarWithInitials from "../../components/Avatar";
+import { getUserInfo, getAllReservasByCurrentUser } from "../../services/reservacion.service";
+import ParticlesBackground from "../../components/ParticleBg"; // Importa tu fondo de partículas
+import { cancelarReserva } from "../../services/reservacion.service"; // Importa el servicio de cancelación
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -27,6 +29,7 @@ function TabPanel(props: TabPanelProps) {
       id={`tabpanel-${index}`}
       aria-labelledby={`tab-${index}`}
       {...other}
+      style={{ transition: 'none' }} // Evita el movimiento al cambiar de tab
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
@@ -35,16 +38,55 @@ function TabPanel(props: TabPanelProps) {
 
 const PerfilUsuario: React.FC = () => {
   const [tabValue, setTabValue] = useState(2);
-  
+  const [userInfo, setUserInfo] = useState<any | null>(null);
+  const [reservas, setReservas] = useState<any[]>([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const user = await getUserInfo();
+        setUserInfo(user);
+
+        const userReservas = await getAllReservasByCurrentUser();
+        console.log("Reservas obtenidas:", userReservas); // Verifica aquí
+
+        setReservas(userReservas);
+      } catch (error) {
+        console.error("Error al obtener la información del usuario:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const filterReservasByEstado = (estado: string) => {
+    const result = reservas.filter((reserva) => reserva.estado === estado);
+    console.log(`Reservas filtradas para el estado ${estado}:`, result);
+    return result;
+
+  };
+
+  const handleCancelReserva = async (id: number) => {
+    try {
+      await cancelarReserva(id); // Llama al método de cancelación
+      // Actualiza el estado de las reservas
+      setReservas((prevReservas) =>
+        prevReservas.map((reserva) =>
+          reserva.id_reservacion === id ? { ...reserva, estado: "Cancelada" } : reserva
+        )
+      );
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+    }
+  };
   return (
     <Box
       sx={{
-        backgroundColor: "#f9f9f9",
+        backgroundColor: "#04172b",
         minHeight: "100vh",
         position: "relative",
         overflow: "hidden",
@@ -72,45 +114,41 @@ const PerfilUsuario: React.FC = () => {
             borderRadius: 3,
             padding: 4,
             width: "100%",
-            maxWidth: 900,
+            maxWidth: 1120,
             marginBottom: 4,
             textAlign: "center",
           }}
         >
-          <Avatar
-            sx={{
-              bgcolor: "#6B3FA0",
-              width: 100,
-              height: 100,
-              fontSize: 40,
-              marginBottom: 2,
-            }}
-          >
-            JH
-          </Avatar>
-
-          <Box>
-            <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
-              Nombre: Jona
-            </Typography>
-            <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
-              Apellido: Hill
-            </Typography>
-            <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
-              Correo electrónico: JonaHill@gmail.com
-            </Typography>
-            <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
-              Número de Contacto: 7286-9867
-            </Typography>
-          </Box>
+          {userInfo && (
+            <>
+              <AvatarWithInitials
+                firstName={userInfo.nombres}
+                lastName={userInfo.apellidos}
+              />
+              <Box>
+                <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
+                  Nombre: {userInfo.nombres}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
+                  Apellido: {userInfo.apellidos}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
+                  DUI: {userInfo.dui || "No disponible"}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "#6B3FA0" }}>
+                  Correo electrónico: {userInfo.email}
+                </Typography>
+              </Box>
+            </>
+          )}
         </Box>
 
-        {/* Pestañas con fondo morado y bordes redondeados */}
+        {/* Pestañas con fondo y color de texto personalizados */}
         <Box
           sx={{
             width: "100%",
-            maxWidth: 900,
-            bgcolor: "#e6e0f8", // Fondo morado suave
+            maxWidth: 1200,
+            color: "white",
             borderRadius: 3,
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
             marginBottom: 4,
@@ -120,43 +158,80 @@ const PerfilUsuario: React.FC = () => {
             value={tabValue}
             onChange={handleChange}
             centered
-            textColor="primary"
-            indicatorColor="primary"
-            sx={{
-              "& .MuiTab-root": { fontWeight: "bold", color: "#6B3FA0" },
-              "& .Mui-selected": { color: "#6B3FA0" },
+            TabIndicatorProps={{
+              style: { backgroundColor: "#6B3FA0" },
             }}
+            sx={{ "& .MuiTab-root": { fontWeight: "bold", color: "white" }, "& .Mui-selected": { color: "#6B3FA0" } }}
           >
-            <Tab label="Curso" />
+            
             <Tab label="Pendientes" />
+            <Tab label="En Curso" />
             <Tab label="Completas" />
             <Tab label="Canceladas" />
           </Tabs>
         </Box>
 
-        {/* Contenedor de tarjetas con fondo morado y bordes redondeados */}
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: 900,
-            bgcolor: "#d1c4e9", // Fondo morado para el área de tarjetas
-            borderRadius: 3,
-            padding: 3,
-          }}
-        >
-          <TabPanel value={tabValue} index={0}>
-            <Typography variant="body1">No hay tarjetas en curso.</Typography>
+        {/* Contenedor de tarjetas en cuadrícula con 4 columnas */}
+        <Box sx={{ width: "100%", maxWidth: 1200 }}>
+        <TabPanel value={tabValue} index={0}>
+            <Grid container spacing={2}>
+              {filterReservasByEstado("Pendiente").length > 0 ? (
+                filterReservasByEstado("Pendiente").map((reserva) => (
+                  <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
+                    <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={false} 
+                     onCancelReserva={() => handleCancelReserva(reserva.id_reservacion)}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Typography variant="body1" sx={{color:"white"}}>No hay reservas pendientes.</Typography>
+                
+              )}
+            </Grid>
           </TabPanel>
-          <TabPanel value={tabValue} index={1}>
-            <Typography variant="body1">No hay tarjetas pendientes.</Typography>
-          </TabPanel>
-          <TabPanel value={tabValue} index={2}>
-            
-            <UserCard />
 
+
+          <TabPanel value={tabValue} index={1}>
+            <Grid container spacing={2}>
+              {filterReservasByEstado("EnCurso").length > 0 ? (
+                filterReservasByEstado("EnCurso").map((reserva) => (
+                  <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
+                    <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={false} />
+                  </Grid>
+                ))
+              ) : (
+                <Typography variant="body1" sx={{color:"white"}}>No hay reservas en curso.</Typography>
+              )}
+            </Grid>
           </TabPanel>
+
+         
+          <TabPanel value={tabValue} index={2}>
+            <Grid container spacing={2}>
+              {filterReservasByEstado("Completada").length > 0 ? (
+                filterReservasByEstado("Completada").map((reserva) => (
+                  <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
+                    <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={true} />
+                  </Grid>
+                ))
+              ) : (
+                <Typography variant="body1" sx={{color:"white"}}>No hay reservas completas.</Typography>
+              )}
+            </Grid>
+          </TabPanel>
+
           <TabPanel value={tabValue} index={3}>
-            <Typography variant="body1">No hay tarjetas canceladas.</Typography>
+            <Grid container spacing={2}>
+              {filterReservasByEstado("Cancelada").length > 0 ? (
+                filterReservasByEstado("Cancelada").map((reserva) => (
+                  <Grid item xs={12} sm={6} md={3} key={reserva.id_reservacion}>
+                    <CardUser key={reserva.id_reservacion} {...reserva} mostrarResena={false} />
+                  </Grid>
+                ))
+              ) : (
+                <Typography variant="body1" sx={{color:"white"}}>No hay reservas canceladas.</Typography>
+              )}
+            </Grid>
           </TabPanel>
         </Box>
       </Box>
