@@ -79,6 +79,7 @@ const TerrenoDetalle: React.FC = () => {
         />
       ) : (
         <DetalleTerrenoCompra
+          id={terreno.id}
           name={terreno.name}
           location={terreno.location}
           price={terreno.price}
@@ -86,6 +87,8 @@ const TerrenoDetalle: React.FC = () => {
           rating={terreno.rating}
           description={terreno.description}
           capacity={terreno.capacity}
+          latitud={terreno.latitud}
+          longitud={terreno.longitud}
           etiquetas={terreno.etiquetas} // Pasar las etiquetas al componente
           usuario={terreno.usuario} // Pasar el usuario al componente
         />
