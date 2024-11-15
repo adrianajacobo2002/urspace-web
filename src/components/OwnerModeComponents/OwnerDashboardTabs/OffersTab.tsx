@@ -1,17 +1,30 @@
+// src/components/OwnerModeComponents/OwnerDashboardTabs/OffersTab.tsx
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Swal from "sweetalert2";
 import OfferCard from "../../OfferCard";
 import { getOffersByCurrentUser, deleteOffer } from "../../../services/ofertas.service";
+import { findOrCreateConversation } from "../../../services/conversaciones.service";
+import { getUserInfo } from "../../../services/users.service";
 
 const OffersTab: React.FC = () => {
   const [offers, setOffers] = useState<any[]>([]);
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
 
   useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userInfo = await getUserInfo();
+        setLoggedInUserId(userInfo.id_usuario);
+      } catch (error) {
+        console.error("Error obteniendo el ID del usuario logueado:", error);
+      }
+    };
+    fetchUserId();
+
     const fetchOffers = async () => {
       try {
         const data = await getOffersByCurrentUser();
-        console.log("Datos de ofertas:", data); // Verificar datos recibidos
         setOffers(data);
       } catch (error) {
         console.error("Error fetching offers:", error);
@@ -35,7 +48,6 @@ const OffersTab: React.FC = () => {
       if (result.isConfirmed) {
         try {
           await deleteOffer(id_oferta);
-          // Filtra las ofertas para eliminar la oferta rechazada del estado
           setOffers((prevOffers) => prevOffers.filter((offer) => offer.id_oferta !== id_oferta));
           Swal.fire('Rechazada', 'La oferta ha sido rechazada.', 'success');
         } catch (error) {
@@ -44,6 +56,17 @@ const OffersTab: React.FC = () => {
         }
       }
     });
+  };
+
+  const handleMessageClick = async (usuarioDestinatarioId: number) => {
+    if (loggedInUserId === null) return;
+
+    try {
+      await findOrCreateConversation(loggedInUserId, usuarioDestinatarioId);
+      window.location.href = "/chat";
+    } catch (error) {
+      console.error("Error al crear o encontrar la conversación:", error);
+    }
   };
 
   return (
@@ -55,7 +78,9 @@ const OffersTab: React.FC = () => {
             initials={offer.initials}
             name={offer.name}
             property={offer.property}
-            onMessageClick={offer.onMessageClick}
+            usuarioDestinatarioId={offer.usuario_id}
+            loggedInUserId={loggedInUserId ?? 0}
+            onMessageClick={() => handleMessageClick(offer.usuario_id)}
             onRejectClick={() => handleRejectOffer(offer.id_oferta)}
           />
         ))}

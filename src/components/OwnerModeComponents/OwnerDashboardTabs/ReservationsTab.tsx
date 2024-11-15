@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import MiniCardReservation from "../../CountCard/MiniCardReservation";
 import ReservationCard from "../../ReservationCard";
 import { getReservasByCurrentUser } from "../../../services/reservacion.service";
+import { getUserInfo } from "../../../services/users.service";
 
 interface Reservation {
   initials: string;
@@ -16,13 +17,25 @@ const ReservationsTab: React.FC = () => {
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
   const [activeFilter, setActiveFilter] = useState("Todas");
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
 
   useEffect(() => {
+    // Obtener el ID del usuario logueado
+    const fetchUserId = async () => {
+      try {
+        const userInfo = await getUserInfo(); // Asegúrate de tener una función que obtenga el ID del usuario logueado
+        setLoggedInUserId(userInfo.id_usuario);
+      } catch (error) {
+        console.error("Error obteniendo el ID del usuario logueado:", error);
+      }
+    };
+    fetchUserId();
+
     const fetchReservations = async () => {
       try {
         const data = await getReservasByCurrentUser();
         setReservations(data);
-        setFilteredReservations(data); // Initialize with all reservations
+        setFilteredReservations(data); // Inicializar con todas las reservaciones
       } catch (error) {
         console.error("Error fetching reservations:", error);
       }
@@ -67,7 +80,11 @@ const ReservationsTab: React.FC = () => {
             dateEnd={reservation.fecha_fin}
             status={reservation.estado.replace(/([A-Z])/g, ' $1').trim()}
             property={reservation.Terreno.nombre}
-            onMessageClick={() => alert(`Mensaje para ${reservation.Usuario.nombres}`)}
+            usuarioDestinatarioId={reservation.Usuario.id_usuario} // Asegúrate de que este campo existe en la estructura de reserva
+            loggedInUserId={loggedInUserId ?? 0} // Pasar el ID del usuario logueado, usando 0 como fallback en caso de que sea null
+            onMessageClick={(conversationId, otherUserName, otherUserInitials) => {
+              console.log("Conversación ID:", conversationId, "Usuario:", otherUserName);
+            }}
           />
         ))}
       </Box>

@@ -1,5 +1,4 @@
 // src/components/OfferCard.tsx
-
 import React from "react";
 import { Box, Typography, Card, Avatar, Button } from "@mui/material";
 
@@ -7,8 +6,10 @@ interface OfferCardProps {
   initials: string;
   name: string;
   property: string;
-  onMessageClick?: () => void;
-  onRejectClick?: () => void;
+  usuarioDestinatarioId: number;
+  loggedInUserId: number;
+  onMessageClick: () => void;
+  onRejectClick: () => void;
 }
 
 const OfferCard: React.FC<OfferCardProps> = ({
@@ -22,9 +23,13 @@ const OfferCard: React.FC<OfferCardProps> = ({
     <Card sx={{ p: 2, borderRadius: 2, boxShadow: 2, width: 400 }}>
       <Box display="flex" alignItems="center" gap={1} mb={1}>
         <Avatar sx={{ bgcolor: "#65348c", color: "white" }}>{initials}</Avatar>
-        <Typography sx={{ color: "black"}} variant="subtitle1">{name}</Typography>
+        <Typography sx={{ color: "black" }} variant="subtitle1">
+          {name}
+        </Typography>
       </Box>
-      <Typography variant="body2" mb={2}>Propiedad: {property}</Typography>
+      <Typography variant="body2" mb={2}>
+        Propiedad: {property}
+      </Typography>
       <Box display="flex" gap={1}>
         <Button
           variant="contained"
