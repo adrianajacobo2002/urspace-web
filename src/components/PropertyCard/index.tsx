@@ -1,165 +1,110 @@
-// src/components/EditPropertyForm.tsx
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getTerrenoById, updateTerreno } from "../../services/terrenos.service";
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
-import ParticlesBackground from "../../components/ParticleBg";
-import Navbar from "../../layouts/UserNavbar";
+// PropertyCard.tsx
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Box, Typography, Card, CardMedia, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteTerreno } from "../../services/terrenos.service";
 
-const Edit: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+interface PropertyCardProps {
+  id: number;
+  images: string[];
+  title: string;
+  property: string;
+  price: string;
+  onDelete: (id: number) => void; // Callback para manejar la eliminación
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({
+  id,
+  images,
+  title,
+  property,
+  price,
+  onDelete,
+}) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    nombre: "",
-    descripcion: "",
-    tipo_terreno: "",
-    capacidad: 0,
-    precio: 0,
-  });
+  const imageUrl = images.length > 0 ? images[0] : "https://via.placeholder.com/300x140";
 
-  useEffect(() => {
-    const fetchPropertyData = async () => {
-      if (id) {
-        try {
-          const propertyData = await getTerrenoById(Number(id));
-          if (propertyData) {
-            setFormData({
-              nombre: propertyData.name,
-              descripcion: propertyData.description,
-              tipo_terreno: propertyData.type,
-              capacidad: propertyData.capacity,
-              precio: propertyData.price,
-            });
-          }
-        } catch (error) {
-          console.error("Error loading property data:", error);
-        }
-      }
-    };
-
-    fetchPropertyData();
-  }, [id]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: name === "capacidad" || name === "precio" ? Number(value) : value,
-    }));
+  const handleEdit = () => {
+    navigate(`/edit/${id}`); // Redirigir al formulario de edición
   };
 
-  const handleUpdateProperty = async () => {
-    const result = await Swal.fire({
-      title: "¿Confirmar edición?",
-      text: "¿Estás seguro de que deseas actualizar los datos de esta propiedad?",
-      icon: "question",
+  const handleDelete = async () => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás deshacer esta acción.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#65348c",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, actualizar",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await updateTerreno(Number(id), formData);
-        Swal.fire("Actualizado", "Propiedad actualizada con éxito", "success");
-        navigate("/owner-mode");
-      } catch (error) {
-        console.error("Error al actualizar la propiedad:", error);
-        Swal.fire("Error", "Hubo un error al actualizar la propiedad", "error");
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteTerreno(id);
+          Swal.fire("Eliminado", "La propiedad ha sido eliminada con éxito.", "success");
+          onDelete(id); // Llamar al callback para actualizar la lista en PropertiesTab
+        } catch (error) {
+          console.error("Error al eliminar la propiedad:", error);
+          Swal.fire("Error", "Hubo un problema al eliminar la propiedad.", "error");
+        }
       }
-    }
+    });
   };
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", backgroundColor: "#0d1b2a" }}>
-      <Navbar />
-      <ParticlesBackground />
-      <Box
+    <Card sx={{ borderRadius: 2, boxShadow: 2, width: 300 }}>
+      <CardMedia
+        component="img"
+        height="200"
+        image={imageUrl}
+        alt={title}
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 2,
-          marginTop: "80px", // Ajuste para el espacio debajo de la barra de navegación
+          objectFit: "cover",
+          width: "100%",
         }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            maxWidth: 800,
-            width: "100%",
-            padding: 4,
-            borderRadius: 3,
-            backgroundColor: "#fff",
-            textAlign: "center",
-            zIndex: 1,
-          }}
-        >
-          <Typography variant="h4" align="center" sx={{ mb: 3, color: "#65348c" }}>
-            Editar propiedad
-          </Typography>
-          <Box display="flex" gap={2} sx={{ mb: 2 }}>
-            <TextField
-              label="Nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleInputChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Tipo de propiedad"
-              name="tipo_terreno"
-              value={formData.tipo_terreno}
-              onChange={handleInputChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-          </Box>
-          <TextField
-            label="Descripcion"
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleInputChange}
-            fullWidth
-            multiline
-            rows={3}
-            sx={{ mb: 2 }}
-          />
-          <Box display="flex" gap={2} sx={{ mb: 2 }}>
-            <TextField
-              label="Capacidad"
-              name="capacidad"
-              type="number"
-              value={formData.capacidad}
-              onChange={handleInputChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Precio"
-              name="precio"
-              type="number"
-              value={formData.precio}
-              onChange={handleInputChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-          </Box>
-          <Button
-            variant="contained"
-            onClick={handleUpdateProperty}
-            sx={{ backgroundColor: "#65348c", color: "#fff", "&:hover": { backgroundColor: "#4e278c" } }}
+      />
+      <Box p={2}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography
+            variant="h6"
+            sx={{
+              color: "black",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "170px",
+            }}
           >
-            Editar Propiedad
-          </Button>
-        </Paper>
+            {title}
+          </Typography>
+          <Box>
+            <IconButton
+              sx={{ color: "#65348c" }}
+              onClick={handleEdit} // Redirige al formulario de edición
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "#65348c" }}
+              onClick={handleDelete} // Maneja la eliminación
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+        <Typography variant="body2" color="textSecondary">
+          {property}
+        </Typography>
+        <Typography variant="body1" fontWeight="bold" color="secondary">
+          {price}
+        </Typography>
       </Box>
-    </Box>
+    </Card>
   );
 };
 
-export default Edit;
+export default PropertyCard;
