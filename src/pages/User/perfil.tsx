@@ -10,7 +10,7 @@ import {
 import Navbar from "../../layouts/UserNavbar";
 import CardUser from "../../components/CardUser/index";
 import AvatarWithInitials from "../../components/Avatar";
-import { getUserInfo, getAllReservasByCurrentUser } from "../../services/reservacion.service";
+import { getUserInfo, getReservasRealizadasPorUsuario } from "../../services/reservacion.service";
 import ParticlesBackground from "../../components/ParticleBg"; // Importa tu fondo de partículas
 import { cancelarReserva } from "../../services/reservacion.service"; // Importa el servicio de cancelación
 
@@ -51,7 +51,7 @@ const PerfilUsuario: React.FC = () => {
         const user = await getUserInfo();
         setUserInfo(user);
 
-        const userReservas = await getAllReservasByCurrentUser();
+        const userReservas = await getReservasRealizadasPorUsuario();
         console.log("Reservas obtenidas:", userReservas); // Verifica aquí
 
         setReservas(userReservas);
@@ -93,6 +93,7 @@ const PerfilUsuario: React.FC = () => {
       }}
     >
       <Navbar />
+      <ParticlesBackground/>
 
       <Box
         sx={{

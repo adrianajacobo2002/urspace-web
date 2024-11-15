@@ -100,18 +100,7 @@ const LoggedNavbar: React.FC = () => {
           >
             Navegar
           </Typography>
-          <Typography
-            component={RouterLink}
-            to="/publicar"
-            sx={{
-              marginRight: "50px",
-              cursor: "pointer",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            Crear Propiedad
-          </Typography>
+          
           <IconButton color="inherit" sx={{ marginRight: "50px" }} onClick={handleChatClick}>
             <ChatBubbleIcon />
           </IconButton>
