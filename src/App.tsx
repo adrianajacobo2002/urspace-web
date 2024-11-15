@@ -18,6 +18,7 @@ import ChatPage from "./components/ChatComponents/ChatPage"; // Importa tu compo
 import TerrenoDetalle  from "./components/TerrenoDetalle";
 import PerfilUsuario from "./pages/User/perfil";
 import Notificaciones from "./pages/User/notificaciones";
+import Edit from "./pages/User/editar-propiedad";
 
 import "./App.css";
 
@@ -109,6 +110,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 < TerrenoDetalle/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/:id"
+            element={
+              <ProtectedRoute>
+                < Edit/>
               </ProtectedRoute>
             }
           />
