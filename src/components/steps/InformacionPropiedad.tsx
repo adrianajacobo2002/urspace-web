@@ -1,4 +1,3 @@
-// src/components/steps/InformacionPropiedad.tsx
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Typography, Chip, Button, IconButton } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -23,20 +22,18 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
 }) => {
   const [nombre, setNombre] = useState(formData.informacionPropiedad.nombre || "");
   const [descripcion, setDescripcion] = useState(formData.informacionPropiedad.descripcion || "");
-  const [capacidad, setCapacidad] = useState(formData.informacionPropiedad.capacidad || 0);
-  const [precio, setPrecio] = useState(formData.informacionPropiedad.precio || 0);
+  const [capacidad, setCapacidad] = useState(formData.informacionPropiedad.capacidad || "");
+  const [precio, setPrecio] = useState(formData.informacionPropiedad.precio || "");
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [etiquetasSeleccionadas, setEtiquetasSeleccionadas] = useState<number[]>(
     formData.informacionPropiedad.etiquetas || []
   );
   const [imagenes, setImagenes] = useState<File[]>(formData.informacionPropiedad.imagenes || []);
 
-  // Cargar etiquetas desde la API y actualizar el estado inicial
   useEffect(() => {
     const cargarEtiquetas = async () => {
       try {
         const etiquetasDesdeAPI = await fetchEtiquetas();
-        console.log("Etiquetas recibidas desde API:", etiquetasDesdeAPI);
         setEtiquetas(etiquetasDesdeAPI);
       } catch (error) {
         console.error("Error al cargar etiquetas:", error);
@@ -45,21 +42,19 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
     cargarEtiquetas();
   }, []);
 
-  // Actualizar formData en cada cambio
   useEffect(() => {
     setFormData({
       ...formData,
       informacionPropiedad: {
         nombre,
         descripcion,
-        capacidad,
-        precio,
+        capacidad: Number(capacidad),
+        precio: Number(precio),
         etiquetas: etiquetasSeleccionadas,
         imagenes,
       },
     });
     setIsStepValid(true);
-    console.log("Actualizando formData con etiquetas seleccionadas:", etiquetasSeleccionadas);
   }, [nombre, descripcion, capacidad, precio, etiquetasSeleccionadas, imagenes, setFormData, setIsStepValid]);
 
   const handleEtiquetaClick = (id: number) => {
@@ -70,8 +65,6 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
         ? [...prevSeleccionadas, id]
         : prevSeleccionadas
     );
-    console.log("Etiqueta ID seleccionada:", id);
-    console.log("Etiquetas seleccionadas:", etiquetasSeleccionadas);
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,19 +79,54 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
     setImagenes(nuevasImagenes);
   };
 
+  const handleNumberInput = (value: string, setter: React.Dispatch<React.SetStateAction<string>>) => {
+    if (/^\d*$/.test(value)) {
+      setter(value);
+    }
+  };
+
   return (
     <Box sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ color: "#65348c", mb: 3 }}>Déjanos conocer sobre tu propiedad</Typography>
-      <TextField label="Nombre de la propiedad" value={nombre} onChange={(e) => setNombre(e.target.value)} fullWidth required />
-      <TextField label="Descripción de la propiedad" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} fullWidth multiline rows={3} required />
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <TextField label="Capacidad" type="number" value={capacidad} onChange={(e) => setCapacidad(Number(e.target.value))} fullWidth required />
-        <TextField label="Precio" type="number" value={precio} onChange={(e) => setPrecio(Number(e.target.value))} fullWidth required />
+      <TextField
+        label="Nombre de la propiedad *"
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+        fullWidth
+        required
+        sx={{ mb: 2 }}
+      />
+      <TextField
+        label="Descripción de la propiedad *"
+        value={descripcion}
+        onChange={(e) => setDescripcion(e.target.value)}
+        fullWidth
+        multiline
+        rows={3}
+        required
+        sx={{ mb: 2 }}
+      />
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <TextField
+          label="Capacidad *"
+          type="text"
+          value={capacidad}
+          onChange={(e) => handleNumberInput(e.target.value, setCapacidad)}
+          fullWidth
+          required
+        />
+        <TextField
+          label="Precio *"
+          type="text"
+          value={precio}
+          onChange={(e) => handleNumberInput(e.target.value, setPrecio)}
+          fullWidth
+          required
+        />
       </Box>
 
       <Box sx={{ textAlign: "left", mt: 4 }}>
         <Typography variant="subtitle1" sx={{ color: "#65348c" }}>Etiquetas</Typography>
-        <Typography variant="body2" sx={{ color: "gray", mb: 1 }}>Selecciona como máximo 5 etiquetas</Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
           {etiquetas.map((etiqueta) => (
             <Chip
@@ -119,7 +147,6 @@ const InformacionPropiedad: React.FC<InformacionPropiedadProps> = ({
 
       <Box sx={{ textAlign: "left", mt: 4 }}>
         <Typography variant="subtitle1" sx={{ color: "#65348c" }}>Imágenes</Typography>
-        <Typography variant="body2" sx={{ color: "gray", mb: 1 }}>Subir imágenes</Typography>
         <Button
           variant="outlined"
           component="label"

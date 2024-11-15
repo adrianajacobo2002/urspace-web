@@ -1,4 +1,3 @@
-// src/components/steps/TipoPropiedad.tsx
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 
@@ -20,9 +19,7 @@ const TipoPropiedad: React.FC<TipoPropiedadProps> = ({ selectedOption, setSelect
     setSelectedOption(option);
     setIsStepValid(true);
     setFormData({ ...formData, tipoPropiedad: option });
-    console.log("Tipo de propiedad seleccionado:", option); // Verificación
   };
-  
 
   return (
     <Box sx={{ textAlign: "center" }}>

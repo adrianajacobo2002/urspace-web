@@ -1,4 +1,3 @@
-// src/components/steps/UbicacionPropiedad.tsx
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
@@ -24,7 +23,6 @@ const UbicacionPropiedad: React.FC<UbicacionPropiedadProps> = ({ setIsStepValid,
   });
 
   useEffect(() => {
-    // Almacena la ubicación en formData
     setFormData({
       ...formData,
       ubicacionPropiedad: {
@@ -34,10 +32,9 @@ const UbicacionPropiedad: React.FC<UbicacionPropiedadProps> = ({ setIsStepValid,
         longitud: position ? position.lng : null,
       },
     });
-    setIsStepValid(!!country && !!city && !!position); // Marca el paso como válido si hay datos completos
+    setIsStepValid(!!country && !!city && !!position);
   }, [country, city, position, setFormData, setIsStepValid]);
 
-  // Maneja el click en el mapa y actualiza la posición
   function LocationMarker() {
     useMapEvents({
       click(e) {

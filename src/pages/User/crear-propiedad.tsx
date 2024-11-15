@@ -8,12 +8,13 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import MapIcon from "@mui/icons-material/Map";
 import ParticlesBackground from "../../components/ParticleBg";
 import Navbar from "../../layouts/UserNavbar";
+import Swal from "sweetalert2";
 import TipoPropiedad from "../../components/steps/TipoPropiedad";
 import InformacionPropiedad from "../../components/steps/InformacionPropiedad";
 import UbicacionPropiedad from "../../components/steps/UbicacionPropiedad";
-import ResumenDatos from "../../components/ResumenDatos";
 import { createTerreno } from "../../services/terrenos.service";
 import { StepIconProps } from "@mui/material/StepIcon";
+import { useNavigate } from "react-router-dom";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: { top: 22 },
@@ -49,6 +50,7 @@ function ColorlibStepIcon(props: StepIconProps) {
 const steps = ["Tipo de propiedad", "Información de la propiedad", "Ubicación"];
 
 const CrearPropiedad: React.FC = () => {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [isStepValid, setIsStepValid] = useState(false);
@@ -77,11 +79,8 @@ const CrearPropiedad: React.FC = () => {
           typeof etiqueta === "object" && etiqueta !== null ? etiqueta.id : etiqueta
         )
         .filter((id) => id !== undefined)
-        .map((id) => Number(id)); // Convertimos todos los elementos a número
-  
-      console.log("Iniciando creación de propiedad con los siguientes datos:", formData);
-      console.log("IDs de las etiquetas que se enviarán:", etiquetaIds);
-  
+        .map((id) => Number(id));
+
       const response = await createTerreno({
         nombre: formData.informacionPropiedad.nombre,
         ubicacion: `${formData.ubicacionPropiedad.pais}, ${formData.ubicacionPropiedad.ciudad}`,
@@ -92,19 +91,36 @@ const CrearPropiedad: React.FC = () => {
         tipo_terreno: formData.tipoPropiedad,
         descripcion: formData.informacionPropiedad.descripcion,
         imagenes: formData.informacionPropiedad.imagenes,
-        etiquetas: etiquetaIds, // Ahora este array solo contiene números
+        etiquetas: etiquetaIds,
       });
-  
+
       if (response) {
-        alert("Propiedad creada con éxito");
+        Swal.fire("Propiedad creada con éxito", "", "success").then(() => {
+          navigate("/owner-mode");
+        });
       }
     } catch (error) {
       console.error("Error al crear la propiedad:", error);
-      alert("Error al crear la propiedad");
+      Swal.fire("Error al crear la propiedad", "Por favor intenta nuevamente.", "error");
     }
   };
-  
-  
+
+  const confirmCreateProperty = () => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Deseas agregar esta propiedad?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#65348c",
+      cancelButtonColor: "#a982c8",
+      confirmButtonText: "Sí, agregar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCreateProperty();
+      }
+    });
+  };
 
   const renderStepContent = (step: number) => {
     switch (step) {
@@ -134,12 +150,11 @@ const CrearPropiedad: React.FC = () => {
             </Stack>
             <Box sx={{ mt: 3 }}>
               {activeStep === steps.length ? (
-                <>
-                  <ResumenDatos formData={formData} />
-                  <Button variant="contained" onClick={handleCreateProperty} sx={{ backgroundColor: "#65348c", color: "#fff", mt: 4 }}>
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Button variant="contained" onClick={confirmCreateProperty} sx={{ backgroundColor: "#65348c", color: "#fff" }}>
                     Crear Propiedad
                   </Button>
-                </>
+                </Box>
               ) : (
                 <Box>
                   {renderStepContent(activeStep)}
