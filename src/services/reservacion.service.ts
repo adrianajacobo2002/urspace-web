@@ -180,6 +180,7 @@ export const getReservasRealizadasPorUsuario = async () => {
       fecha_fin: reserva.fecha_fin,
       impuestos: reserva.impuestos || 0,
       subtotal: reserva.subtotal || 0,
+      id_terreno: reserva.Terreno?.id_terreno,
       precio_total: reserva.precio_total ?? null,
       capacidad: reserva.Terreno?.capacidad || "Capacidad no disponible",
       precio_noche: reserva.Terreno?.precio || 0,

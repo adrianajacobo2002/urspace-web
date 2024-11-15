@@ -28,6 +28,7 @@ interface CardUserProps {
   descripcion: string;
   propietario_nombre: string;
   propietario_correo: string;
+  id_terreno: number;
   mostrarResena: boolean; // Indica si se debe mostrar el botón de reseña
   
   onCancelReserva?: () => void; // Función para cancelar reserva
@@ -63,13 +64,21 @@ const CardUser: React.FC<CardUserProps> = ({
   descripcion,
   propietario_nombre,
   propietario_correo,
+  id_terreno,
   mostrarResena,
   onCancelReserva,
 }) => {
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenModal = () => {
+    console.log("Abriendo modal para valoración del terreno con ID:", id_terreno);
+    setOpenModal(true);
+  }
+  const handleCloseModal = () => {
+    console.log("Cerrando modal de valoración");
+    setOpenModal(false);
+  }
+
 
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
@@ -198,7 +207,7 @@ const CardUser: React.FC<CardUserProps> = ({
       </Card>
 
       {/* Modal de reseña */}
-      <ModalUser open={openModal} handleClose={handleCloseModal} />
+      <ModalUser open={openModal} handleClose={handleCloseModal} terrenoId={id_terreno}/>
     </>
   );
 };

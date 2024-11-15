@@ -2,18 +2,41 @@
 import React, { useState } from "react";
 import { Box, Modal, Typography, TextField, Button, IconButton } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { createValoracion } from "../../services/valoraciones.service"; // Importa el servicio para crear valoración
+
 
 interface ReviewModalProps {
   open: boolean;
   handleClose: () => void;
+  terrenoId: number;
 }
 
-const ReviewModal: React.FC<ReviewModalProps> = ({ open, handleClose }) => {
-  const [rating, setRating] = useState(4); // Valor inicial de calificación (4 estrellas)
+const ReviewModal: React.FC<ReviewModalProps> = ({ open, handleClose, terrenoId }) => {
+  const [rating, setRating] = useState(1); // Valor inicial de calificación (4 estrellas)
   const [review, setReview] = useState("");
 
   const handleStarClick = (index: number) => {
     setRating(index + 1);
+  };
+
+  const handleAddReview = async () => {
+    console.log("Enviando valoración con los siguientes datos:", {
+      calificacion: rating,
+      comentario: review,
+      terreno_id: terrenoId,
+    });
+
+    try {
+      await createValoracion({
+        calificacion: rating,
+        comentario: review,
+        terreno_id: terrenoId,
+      });
+      console.log("Valoración creada exitosamente");
+      handleClose(); // Cierra el modal después de agregar la reseña
+    } catch (error) {
+      console.error("Error al agregar la valoración:", error);
+    }
   };
 
   return (
@@ -73,7 +96,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ open, handleClose }) => {
 
         <Button
           variant="contained"
-          onClick={handleClose}
+          onClick={handleAddReview}
           sx={{
             backgroundColor: "#f0f0f0",
             color: "#6B3FA0",
