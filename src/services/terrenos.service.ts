@@ -298,3 +298,50 @@ export const getTerrenoById = async (id: number) => {
     throw error;
   }
 };
+
+export const updateTerreno = async (
+  id: number,
+  terrenoData: {
+    nombre: string;
+    descripcion: string;
+    tipo_terreno: string;
+    capacidad: number;
+    precio: number;
+  }
+) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const response = await axios.patch(`${API_URL}/${id}`, terrenoData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el terreno:", error);
+    throw error;
+  }
+};
+
+export const deleteTerreno = async (id: number) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  try {
+    const response = await axios.delete(`${API_URL}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al eliminar el terreno:", error);
+    throw error;
+  }
+};

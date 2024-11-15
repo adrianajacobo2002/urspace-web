@@ -5,7 +5,6 @@ import { getTerrenoById, updateTerreno } from "../../services/terrenos.service";
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import ParticlesBackground from "../../components/ParticleBg";
 import Navbar from "../../layouts/UserNavbar";
-import Swal from "sweetalert2";
 
 const Edit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,26 +49,13 @@ const Edit: React.FC = () => {
   };
 
   const handleUpdateProperty = async () => {
-    const result = await Swal.fire({
-      title: "¿Confirmar edición?",
-      text: "¿Estás seguro de que deseas actualizar los datos de esta propiedad?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#65348c",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, actualizar",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await updateTerreno(Number(id), formData);
-        Swal.fire("Actualizado", "Propiedad actualizada con éxito", "success");
-        navigate("/owner-mode");
-      } catch (error) {
-        console.error("Error al actualizar la propiedad:", error);
-        Swal.fire("Error", "Hubo un error al actualizar la propiedad", "error");
-      }
+    try {
+      await updateTerreno(Number(id), formData);
+      alert("Propiedad actualizada con éxito");
+      navigate("/owner-mode");
+    } catch (error) {
+      console.error("Error al actualizar la propiedad:", error);
+      alert("Error al actualizar la propiedad");
     }
   };
 
