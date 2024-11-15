@@ -13,21 +13,19 @@ const getToken = () => {
   return token;
 };
 
-// Obtener todas las notificaciones de un usuario logueado
-export const getNotificacionesByUsuario = async () => {
-  try {
-    const token = getToken();
-    const response = await axios.get(`${API_URL}/notificaciones`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener notificaciones:", error);
-    throw error;
-  }
-};
+// notificacion.service.ts
+export const getNotificacionesByUsuario = async (userId: number) => {
+    try {
+      const response = await axios.get(`${API_URL}/notificaciones/usuario/${userId}`);
+      console.log("Datos de notificaciones obtenidos de la API:", response.data); // Verificar la respuesta
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener notificaciones:", error);
+      throw error;
+    }
+  };
+  
+  
 
 // Marcar una notificación como leída
 export const markNotificacionAsRead = async (idNotificacion: number) => {

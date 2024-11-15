@@ -1,4 +1,3 @@
-// src/layouts/LoggedNavbar.tsx
 import React, { useEffect, useState } from "react";
 import {
   AppBar,
@@ -8,11 +7,13 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Badge,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import AvatarWithInitials from "../../components/Avatar";
 import { getUserInfo } from "../../services/users.service";
+import { getNotificacionesByUsuario } from "../../services/notificacion.service";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -24,6 +25,7 @@ interface User {
 const LoggedNavbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [unreadCount, setUnreadCount] = useState<number>(0); // Estado para el contador de no leídas
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,8 +36,13 @@ const LoggedNavbar: React.FC = () => {
           firstName: response.nombres.split(" ")[0],
           lastName: response.apellidos.split(" ")[0],
         });
+        
+        // Llamada para obtener las notificaciones no leídas
+        const notificaciones = await getNotificacionesByUsuario(response.id_usuario);
+        const unreadNotifications = notificaciones.filter((notif: any) => !notif.leido).length;
+        setUnreadCount(unreadNotifications);
       } catch (error) {
-        console.error("Error al obtener la información del usuario:", error);
+        console.error("Error al obtener la información del usuario o las notificaciones:", error);
       }
     };
     fetchUserInfo();
@@ -51,26 +58,26 @@ const LoggedNavbar: React.FC = () => {
 
   const handleViewProfile = () => {
     handleMenuClose();
-    navigate("/profile"); // Navega a la página de perfil
+    navigate("/profile");
   };
 
   const handleOwnerMode = () => {
     handleMenuClose();
-    navigate("/owner-mode"); // Navega a la página de modo propietario
+    navigate("/owner-mode");
   };
 
   const handleLogout = () => {
     handleMenuClose();
-    localStorage.removeItem("token"); // Elimina el token de autenticación
-    navigate("/login"); // Redirige al usuario a la página de inicio de sesión
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const handleChatClick = () => {
-    navigate("/chat"); // Navega a la página de chat
+    navigate("/chat");
   };
 
   const handleNotificationClick = () => {
-    navigate("/notificaciones"); // Navega a la página de chat
+    navigate("/notificaciones");
   };
 
   return (
@@ -83,7 +90,7 @@ const LoggedNavbar: React.FC = () => {
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography
             component={RouterLink}
-            to="/navegar" // Cambia a la ruta correspondiente
+            to="/navegar"
             sx={{
               marginRight: "50px",
               cursor: "pointer",
@@ -92,10 +99,10 @@ const LoggedNavbar: React.FC = () => {
             }}
           >
             Navegar
-          </Typography>{" "}
+          </Typography>
           <Typography
             component={RouterLink}
-            to="/publicar" // Cambia a la ruta correspondiente
+            to="/publicar"
             sx={{
               marginRight: "50px",
               cursor: "pointer",
@@ -109,7 +116,9 @@ const LoggedNavbar: React.FC = () => {
             <ChatBubbleIcon />
           </IconButton>
           <IconButton color="inherit" sx={{ marginRight: "50px" }} onClick={handleNotificationClick}>
-            <NotificationsIcon />
+            <Badge badgeContent={unreadCount} color="secondary">
+              <NotificationsIcon />
+            </Badge>
           </IconButton>
           <IconButton onClick={handleMenuOpen}>
             {user && (
